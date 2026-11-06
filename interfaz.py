@@ -102,10 +102,10 @@ def ventana_principal_admin():
     def mostrar_frame(frame):
         frame.tkraise()  # funcion para traer el frame al frente
 
-    def label(padre,texto,pos_x, pos_y, color_texto, fondo_texto):
+    def label(padre,texto,pos_x, pos_y, color_texto, fondo_texto, tam_texto):
         tk.Label(padre,
                  text=texto,
-                 font=("Sans-Serif", 10, "bold"),
+                 font=("Sans-Serif", tam_texto, "bold"),
                  fg=color_texto, bg=fondo_texto
                  ).place(x=pos_x , y=pos_y)
 
@@ -142,6 +142,18 @@ def ventana_principal_admin():
         numero.place(relx=0, rely=0.62, relwidth=1)
         return cuadro, numero
 
+    def entrada(padre, pos_x, pos_y,ancho, alto, tam_fuente):
+        campo = tk.Entry(padre,
+                         font=("Sans-Serif", tam_fuente, "bold"),
+                         relief="flat",
+                         bd=0,
+                         justify="left",
+                         highlightthickness=2
+                         )
+
+        campo.place(x=pos_x, y= pos_y, width=ancho, height=alto)
+        return campo
+
     def actualizar_estadisticas():
 
         label_fecha_hora.config(text=time.strftime("%d/%m/%Y\n%H:%M:%S"))
@@ -161,23 +173,24 @@ def ventana_principal_admin():
 
     # GESTIONES PRINCIPALES
 
-    label(barra_lateral,"GESTIONES", 30, 25, COLOR_BLANCO, COLOR_PRINCIPAL)
+    label(barra_lateral,"GESTIONES", 30, 25, COLOR_BLANCO, COLOR_PRINCIPAL, 10)
     boton(barra_lateral,"REGISTRAR PACIENTE",40, 70,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_registrar_paciente))
-    boton(barra_lateral,"GENERAR TURNO",40, 120,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
-    boton(barra_lateral,"CANCELAR TURNO",40, 170,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
-    boton(barra_lateral,"BUSCAR PACIENTE", 40,220,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
+    boton(barra_lateral,"NUEVO USUARIO", 40, 120, COLOR_BLANCO, COLOR_PRINCIPAL, "flat", 150,25,comando=lambda: mostrar_frame(frame_nuevo_usuario))
+    boton(barra_lateral,"CANCELAR TURNO",40, 170,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_cancelar_turno))
+    boton(barra_lateral,"BUSCAR PACIENTE", 40,220,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_buscar_paciente))
 
     # HISTORIAL
 
-    label(barra_lateral,"HISTORIAL",30, 270, COLOR_BLANCO, COLOR_PRINCIPAL)
+    label(barra_lateral,"HISTORIAL",30, 270, COLOR_BLANCO, COLOR_PRINCIPAL,10)
     boton(barra_lateral,"ACCIONES",40,320,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
     boton(barra_lateral,"PACIENTES",40,  370,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
 
     # INFORMACION
 
-    label(barra_lateral,"ADMINISTRAR INFORMACION",30, 420, COLOR_BLANCO, COLOR_PRINCIPAL)
+    label(barra_lateral,"ADMINISTRAR INFORMACION",30, 420, COLOR_BLANCO, COLOR_PRINCIPAL,10)
     boton(barra_lateral,"USUARIO", 40,470,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
     boton(barra_lateral,"PACIENTES", 40,520,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
+
 
     # VENTANA PRINCIPAL
 
@@ -218,8 +231,222 @@ def ventana_principal_admin():
 
 
     # Frame Registrar Paciente
+
     frame_registrar_paciente = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
     frame_registrar_paciente.place(x=251, y=0, relwidth=1,width=-251, relheight=1)
+
+    titulo = tk.Label(frame_registrar_paciente,
+                      text="REGISTRO DE PACIENTES",
+                      font=("Sans-Serif", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=350, y=50)
+
+    label(frame_registrar_paciente,"DATOS PERSONALES",130,120,COLOR_OSCURO,COLOR_BLANCO,13)
+
+    label(frame_registrar_paciente,"NOMBRE COMPLETO", 130,180,COLOR_OSCURO,COLOR_BLANCO,8)
+    entrada_nombre = entrada(frame_registrar_paciente, 130,200,300,30, 10)
+
+    label(frame_registrar_paciente,"CUI", 600,180,COLOR_OSCURO,COLOR_BLANCO,8 )
+    entrada_cui = entrada(frame_registrar_paciente, 600,200,300,30, 10)
+
+    label(frame_registrar_paciente,"EDAD", 130, 290,COLOR_OSCURO,COLOR_BLANCO,8)
+    entrada_edad = entrada(frame_registrar_paciente, 130,310,300,30, 10)
+
+    label(frame_registrar_paciente,"TELEFONO",600, 290, COLOR_OSCURO,COLOR_BLANCO,8 )
+    entrada_telefono = entrada(frame_registrar_paciente, 600,310,300,30, 10)
+
+    label(frame_registrar_paciente,"MOTIVO DE CONSULTA",130,410,COLOR_OSCURO,COLOR_BLANCO,8)
+    entrada_motivo_consulta = entrada(frame_registrar_paciente, 130,430,300,30, 10)
+
+    label(frame_registrar_paciente,"TIPO DE ATENCION",600, 410,COLOR_OSCURO,COLOR_BLANCO,8)
+    lista_atencion = ttk.Combobox(frame_registrar_paciente,
+                                  values=["NORMAL", "PRIORITARIA"],
+                                  font=("Sans", 10, "bold"),
+                                  state="readonly",
+                                  )
+    lista_atencion.place(x=600 , y=430,  width=300,height=30)
+
+    tk.Button(frame_registrar_paciente,text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=250, y=550, width=180, height=50)
+
+    tk.Button(frame_registrar_paciente, text="REGISTRAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=550, width=180, height=50)
+
+    # Frame Nuevo Usuario
+
+    frame_nuevo_usuario = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
+    frame_nuevo_usuario.place(x=251, y=0, relwidth=1,width=-251, relheight=1)
+
+    titulo = tk.Label(frame_nuevo_usuario,
+                      text="REGISTRO NUEVO USUARIO",
+                      font=("Sans-Serif", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=330, y=50)
+
+    label(frame_nuevo_usuario, "DATOS PERSONALES", 130, 120, COLOR_OSCURO, COLOR_BLANCO, 13)
+
+    label(frame_nuevo_usuario, "NOMBRE COMPLETO", 130, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_nombre = entrada(frame_nuevo_usuario, 130, 200, 300, 30, 10)
+
+    label(frame_nuevo_usuario, "CUI", 600, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_cui = entrada(frame_nuevo_usuario, 600, 200, 300, 30, 10)
+
+    label(frame_nuevo_usuario, "EDAD", 130, 290, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_edad = entrada(frame_nuevo_usuario, 130, 310, 300, 30, 10)
+
+    label(frame_nuevo_usuario, "TELEFONO", 600, 290, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_telefono = entrada(frame_nuevo_usuario, 600, 310, 300, 30, 10)
+
+    label(frame_nuevo_usuario, "USUARIO", 130, 410, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_motivo_consulta = entrada(frame_nuevo_usuario, 130, 430, 300, 30, 10)
+
+    label(frame_nuevo_usuario, "CONTRASEÑA", 600, 410, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_password = entrada(frame_nuevo_usuario, 600, 430, 300, 30, 10)
+
+    label(frame_nuevo_usuario, "TIPO DE USUARIO:", 450, 530, COLOR_OSCURO, COLOR_BLANCO, 8)
+    lista_tipo_usuario = ttk.Combobox(frame_nuevo_usuario,
+                                  values=["ADMINISTRADOR", "RECEPCIONISTA"],
+                                  font=("Sans", 10, "bold"),
+                                  state="readonly",
+                                  )
+    lista_tipo_usuario.place(x=345, y=550, width=300, height=30)
+
+
+
+    tk.Button(frame_nuevo_usuario, text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=250, y=650, width=180, height=50)
+
+    tk.Button(frame_nuevo_usuario, text="REGISTRAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=650, width=180, height=50)
+
+    # Frame Cancelar Turno
+
+    frame_cancelar_turno = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
+    frame_cancelar_turno.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_cancelar_turno,
+                      text="CANCELAR TURNO",
+                      font=("Sans-Serif", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=350, y=100)
+
+    label(frame_cancelar_turno,"BUSCAR POR:",130, 240, COLOR_OSCURO,COLOR_BLANCO,8 )
+    lista_busqueda = ttk.Combobox(frame_cancelar_turno,
+                                  values=["NOMBRE", "CUI", "TELEFONO", "EDAD"],
+                                  font=("Sans", 10, "bold"),
+                                  state="readonly",)
+    lista_busqueda.place(x=130, y=260,width=300,height=30)
+
+    tk.Button(frame_cancelar_turno,
+              text="FILTRAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=260, width=150, height=30)
+
+    tk.Button(frame_cancelar_turno,
+              text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=370, width=150, height=30)
+
+    label(frame_cancelar_turno,"RESULTADO:",130, 460, COLOR_OSCURO,COLOR_BLANCO,8 )
+    lista_resultado = ttk.Combobox(frame_cancelar_turno,
+                                   values=[],
+                                   font=("Sans", 10, "bold"),
+                                   state="readonly",)
+    lista_resultado.place(x=130, y=480,width=300,height=30)
+
+    tk.Button(frame_cancelar_turno,
+              text="CANCELAR TURNO",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,).place(x=600, y=480, width=150, height=30)
+
+    #Frame Buscar Paciente
+
+    frame_buscar_paciente = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
+    frame_buscar_paciente.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_buscar_paciente,
+                      text="BUSCAR PACIENTE",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=360, y=80)
+
+    label(frame_buscar_paciente,"BUSCAR POR:",130, 200, COLOR_OSCURO,COLOR_BLANCO,8)
+    lista_busqueda = ttk.Combobox(frame_buscar_paciente,
+                                  values=["NOMBRE", "CUI", "TELEFONO", "EDAD"],
+                                  font=("Sans", 10, "bold"),
+                                  state="readonly", )
+    lista_busqueda.place(x=130, y=220, width=300, height=30)
+
+
+    tk.Button(frame_buscar_paciente,
+              text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=220, width=150, height=30)
+
+    label(frame_buscar_paciente,"DATOS:", 130, 320, COLOR_OSCURO,COLOR_BLANCO,8)
+    entrada_datos = entrada(frame_buscar_paciente,130,340,300,30,10 )
+
+    tk.Button(frame_buscar_paciente,
+              text="BUSCAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=340, width=150, height=30)
+
+    label(frame_buscar_paciente,"RESULTADO:", 450, 460, COLOR_OSCURO,COLOR_BLANCO,8)
+    resultado = tk.Label(frame_buscar_paciente,
+                         text="resultado",
+                         font=("Sans", 10, "bold"),
+                         relief="solid", bd=1,
+                         bg=COLOR_BLANCO,)
+    resultado.place(x=335, y=480, width=300, height=30)
+
+
+
+
+
+
 
     actualizar_estadisticas()
     mostrar_frame(frame_principal_admin)
