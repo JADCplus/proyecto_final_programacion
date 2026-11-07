@@ -37,14 +37,23 @@ class Paciente(Persona):
         self.__motivo = motivo
         self.__tipo = tipo
 
-def validarPaciente(cui, nombre, edad, telefono, motivo, tipo):
+listadoPacientes = []
+def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
+    p = Paciente(nombre, edad, cui, telefono, motivo, tipo)
+    confirmar = messagebox.askokcancel("Registro de paciente", "Asegurese de que la información es correcta.\n¿Desea registrar al paciente?")
+    if confirmar:
+        listadoPacientes.append(p)
+        messagebox.showinfo("Paciente registrado","El paciente ha sido registrado correctamente.")
+        return True
+    return False
+def validacionesDatosNumericos(cui, edad, telefono):
     if edad.isdigit():
         if int(edad) >= 0 and int(edad) <= 120:
             if cui.isdigit():
                 if len(cui) == 13:
                     if telefono.isdigit():
                         if len(telefono) == 8:
-                            p = Persona(nombre, edad, cui, telefono)
+                            return True
                         else:
                             messagebox.showwarning("Error al ingresar teléfono", "Asegurese de que el teléfono tenga 8 dígitos.")
                     else:
@@ -57,3 +66,4 @@ def validarPaciente(cui, nombre, edad, telefono, motivo, tipo):
             messagebox.showwarning("Error al ingresar edad", "Asegurese de ingresar una edad válida.")
     else:
         messagebox.showwarning("Error al ingresar edad", "Asegurese de que la edad sea un número entero.")
+    return False

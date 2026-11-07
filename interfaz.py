@@ -246,7 +246,9 @@ def ventana_principal_admin():
             nombre = entrada_nombre_paciente.get()
             motivo = entrada_motivo.get()
             tipo = lista_atencion.get()
-            logica.validarPaciente(cui, nombre, edad, numero, motivo, tipo)
+            if logica.validacionesDatosNumericos(cui, edad, numero):
+                if logica.registrarPaciente(cui,nombre,edad,numero,motivo,tipo):
+                    limpiarInfoPaciente()
 
     def limpiarInfoPaciente():
         entrada_nombre_paciente.delete(0, "end")
