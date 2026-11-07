@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 import time
+from tkinter import messagebox
+import logica
 
 # Colores del proyecto
 COLOR_PRINCIPAL = "#0097A7"
@@ -152,6 +154,7 @@ def ventana_principal_admin():
                          )
 
         campo.place(x=pos_x, y= pos_y, width=ancho, height=alto)
+
         return campo
 
     def actualizar_estadisticas():
@@ -232,6 +235,28 @@ def ventana_principal_admin():
 
     # Frame Registrar Paciente
 
+    def registrarPacienteNuevo():
+        if (not entrada_nombre_paciente.get() or not entrada_cui_paciente.get() or not entrada_edad_paciente.get()
+                or not entrada_telefono_paciente.get() or not entrada_motivo.get() or not lista_atencion.get()):
+            messagebox.showwarning("Error al registrar paciente", "Asegurese de llenar todos los campos.")
+        else:
+            edad = entrada_edad_paciente.get()
+            numero = entrada_telefono_paciente.get()
+            cui = entrada_cui_paciente.get()
+            nombre = entrada_nombre_paciente.get()
+            motivo = entrada_motivo.get()
+            tipo = lista_atencion.get()
+            logica.validarPaciente(cui, nombre, edad, numero, motivo, tipo)
+
+    def limpiarInfoPaciente():
+        entrada_nombre_paciente.delete(0, "end")
+        entrada_telefono_paciente.delete(0, "end")
+        entrada_motivo.delete(0, "end")
+        entrada_edad_paciente.delete(0, "end")
+        entrada_cui_paciente.delete(0, "end")
+        lista_atencion.current(0)
+        entrada_nombre_paciente.focus_set()
+
     frame_registrar_paciente = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
     frame_registrar_paciente.place(x=251, y=0, relwidth=1,width=-251, relheight=1)
 
@@ -245,27 +270,29 @@ def ventana_principal_admin():
     label(frame_registrar_paciente,"DATOS PERSONALES",130,120,COLOR_OSCURO,COLOR_BLANCO,13)
 
     label(frame_registrar_paciente,"NOMBRE COMPLETO", 130,180,COLOR_OSCURO,COLOR_BLANCO,8)
-    entrada_nombre = entrada(frame_registrar_paciente, 130,200,300,30, 10)
+    entrada_nombre_paciente = entrada(frame_registrar_paciente, 130,200,300,30, 10)
+    entrada_nombre_paciente.focus_set()
 
     label(frame_registrar_paciente,"CUI", 600,180,COLOR_OSCURO,COLOR_BLANCO,8 )
-    entrada_cui = entrada(frame_registrar_paciente, 600,200,300,30, 10)
+    entrada_cui_paciente = entrada(frame_registrar_paciente, 600,200,300,30, 10)
 
     label(frame_registrar_paciente,"EDAD", 130, 290,COLOR_OSCURO,COLOR_BLANCO,8)
-    entrada_edad = entrada(frame_registrar_paciente, 130,310,300,30, 10)
+    entrada_edad_paciente = entrada(frame_registrar_paciente, 130,310,300,30, 10)
 
     label(frame_registrar_paciente,"TELEFONO",600, 290, COLOR_OSCURO,COLOR_BLANCO,8 )
-    entrada_telefono = entrada(frame_registrar_paciente, 600,310,300,30, 10)
+    entrada_telefono_paciente = entrada(frame_registrar_paciente, 600,310,300,30, 10)
 
     label(frame_registrar_paciente,"MOTIVO DE CONSULTA",130,410,COLOR_OSCURO,COLOR_BLANCO,8)
-    entrada_motivo_consulta = entrada(frame_registrar_paciente, 130,430,300,30, 10)
+    entrada_motivo = entrada(frame_registrar_paciente, 130,430,300,30, 10)
 
     label(frame_registrar_paciente,"TIPO DE ATENCION",600, 410,COLOR_OSCURO,COLOR_BLANCO,8)
     lista_atencion = ttk.Combobox(frame_registrar_paciente,
-                                  values=["NORMAL", "PRIORITARIA"],
+                                  values=["Normal", "Prioritaria"],
                                   font=("Sans", 10, "bold"),
                                   state="readonly",
                                   )
     lista_atencion.place(x=600 , y=430,  width=300,height=30)
+    lista_atencion.current(0)
 
     tk.Button(frame_registrar_paciente,text="LIMPIAR CAMPOS",
               font=("Sans", 10, "bold"),
@@ -273,6 +300,7 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
+              command = limpiarInfoPaciente
               ).place(x=250, y=550, width=180, height=50)
 
     tk.Button(frame_registrar_paciente, text="REGISTRAR",
@@ -281,6 +309,7 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
+              command=registrarPacienteNuevo
               ).place(x=600, y=550, width=180, height=50)
 
     # Frame Nuevo Usuario
