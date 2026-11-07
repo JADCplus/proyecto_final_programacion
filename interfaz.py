@@ -235,15 +235,10 @@ def ventana_principal_admin():
 
     # Frame Registrar Paciente
 
-    def registrarPacienteNuevo():
-        if (not entrada_nombre_paciente.get() or not entrada_cui_paciente.get() or not entrada_edad_paciente.get()
-                or not entrada_telefono_paciente.get() or not entrada_motivo.get() or not lista_atencion.get()):
+    def registrarPacienteNuevo(cui,nombre,edad,numero):
+        if not edad or not cui or not nombre or not numero or not entrada_motivo.get() or not lista_atencion.get():
             messagebox.showwarning("Error al registrar paciente", "Asegurese de llenar todos los campos.")
         else:
-            edad = entrada_edad_paciente.get()
-            numero = entrada_telefono_paciente.get()
-            cui = entrada_cui_paciente.get()
-            nombre = entrada_nombre_paciente.get()
             motivo = entrada_motivo.get()
             tipo = lista_atencion.get()
             if logica.validacionesDatosNumericos(cui, edad, numero):
@@ -311,10 +306,31 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
-              command=registrarPacienteNuevo
+              command=lambda: registrarPacienteNuevo(entrada_cui_paciente.get(),entrada_nombre_paciente.get(),
+                                                     entrada_edad_paciente.get(), entrada_telefono_paciente.get())
               ).place(x=600, y=550, width=180, height=50)
 
     # Frame Nuevo Usuario
+    def registrarUsuarioNuevo(cui,nombre,edad,numero):
+        if not edad or not cui or not nombre or not numero or not entrada_usuario.get() or not entrada_password.get():
+            messagebox.showwarning("Error al registrar usuario", "Asegurese de llenar todos los campos.")
+        else:
+            usuario = entrada_usuario.get()
+            cont = entrada_password.get()
+            tipo = lista_tipo_usuario.get()
+            if logica.validacionesDatosNumericos(cui, edad, numero):
+                if logica.registrarUsuario(cui,nombre,edad,numero,usuario, cont,tipo):
+                    limpiarInfoUsuarios()
+
+    def limpiarInfoUsuarios():
+        entrada_nombre.delete(0, "end")
+        entrada_telefono.delete(0, "end")
+        entrada_edad.delete(0, "end")
+        entrada_cui.delete(0, "end")
+        entrada_usuario.delete(0, "end")
+        entrada_password.delete(0, "end")
+        lista_tipo_usuario.current(0)
+        entrada_nombre.focus_set()
 
     frame_nuevo_usuario = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
     frame_nuevo_usuario.place(x=251, y=0, relwidth=1,width=-251, relheight=1)
@@ -330,6 +346,7 @@ def ventana_principal_admin():
 
     label(frame_nuevo_usuario, "NOMBRE COMPLETO", 130, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
     entrada_nombre = entrada(frame_nuevo_usuario, 130, 200, 300, 30, 10)
+    entrada_nombre.focus_set()
 
     label(frame_nuevo_usuario, "CUI", 600, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
     entrada_cui = entrada(frame_nuevo_usuario, 600, 200, 300, 30, 10)
@@ -341,19 +358,19 @@ def ventana_principal_admin():
     entrada_telefono = entrada(frame_nuevo_usuario, 600, 310, 300, 30, 10)
 
     label(frame_nuevo_usuario, "USUARIO", 130, 410, COLOR_OSCURO, COLOR_BLANCO, 8)
-    entrada_motivo_consulta = entrada(frame_nuevo_usuario, 130, 430, 300, 30, 10)
+    entrada_usuario = entrada(frame_nuevo_usuario, 130, 430, 300, 30, 10)
 
     label(frame_nuevo_usuario, "CONTRASEÑA", 600, 410, COLOR_OSCURO, COLOR_BLANCO, 8)
     entrada_password = entrada(frame_nuevo_usuario, 600, 430, 300, 30, 10)
 
     label(frame_nuevo_usuario, "TIPO DE USUARIO:", 450, 530, COLOR_OSCURO, COLOR_BLANCO, 8)
     lista_tipo_usuario = ttk.Combobox(frame_nuevo_usuario,
-                                  values=["ADMINISTRADOR", "RECEPCIONISTA"],
+                                  values=["Recepcionista", "Administrador"],
                                   font=("Sans", 10, "bold"),
                                   state="readonly",
                                   )
     lista_tipo_usuario.place(x=345, y=550, width=300, height=30)
-
+    lista_tipo_usuario.current(0)
 
 
     tk.Button(frame_nuevo_usuario, text="LIMPIAR CAMPOS",
@@ -362,6 +379,7 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
+              command = limpiarInfoUsuarios
               ).place(x=250, y=650, width=180, height=50)
 
     tk.Button(frame_nuevo_usuario, text="REGISTRAR",
@@ -370,6 +388,7 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
+              command = lambda: registrarUsuarioNuevo(entrada_cui.get(),entrada_nombre.get(),entrada_edad.get(),entrada_telefono.get())
               ).place(x=600, y=650, width=180, height=50)
 
     # Frame Cancelar Turno

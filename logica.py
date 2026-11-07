@@ -37,6 +37,13 @@ class Paciente(Persona):
         self.__motivo = motivo
         self.__tipo = tipo
 
+class Usuario(Persona):
+    def __init__(self, nombre, edad, cui, telefono, usuario, contra, tipo):
+        super().__init__(nombre, edad, cui, telefono)
+        self.__usuario = usuario
+        self.__contra = contra
+        self.__tipo = tipo
+
 listadoPacientes = []
 def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
     p = Paciente(nombre, edad, cui, telefono, motivo, tipo)
@@ -46,6 +53,16 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
         messagebox.showinfo("Paciente registrado","El paciente ha sido registrado correctamente.")
         return True
     return False
+listadoUsuarios = []
+def registrarUsuario(cui, nombre, edad, telefono, usuario, contra, tipo):
+    u = Usuario(nombre,edad,cui,telefono,usuario,contra,tipo)
+    confirmar = messagebox.askokcancel("Registro de usuario","Asegurese de que la información es correcta.\n¿Desea registrar el usuario?")
+    if confirmar:
+        listadoUsuarios.append(u)
+        messagebox.showinfo("Usuario registrado", "El usuario ha sido registrado correctamente.")
+        return True
+    return False
+
 def validacionesDatosNumericos(cui, edad, telefono):
     if edad.isdigit():
         if int(edad) >= 0 and int(edad) <= 120:
