@@ -445,6 +445,10 @@ def ventana_principal_admin():
 
     #Frame Buscar Paciente
 
+    def botonBuscar():
+        resul = logica.buscarPaciente(lista_busqueda.get(),entrada_datos.get())
+        resultado.config(text=resul)
+
     frame_buscar_paciente = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
     frame_buscar_paciente.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
 
@@ -457,11 +461,11 @@ def ventana_principal_admin():
 
     label(frame_buscar_paciente,"BUSCAR POR:",130, 200, COLOR_OSCURO,COLOR_BLANCO,8)
     lista_busqueda = ttk.Combobox(frame_buscar_paciente,
-                                  values=["NOMBRE", "CUI", "TELEFONO", "EDAD"],
+                                  values=["Nombre", "CUI", "Código de turno"],
                                   font=("Sans", 10, "bold"),
                                   state="readonly", )
     lista_busqueda.place(x=130, y=220, width=300, height=30)
-
+    lista_busqueda.current(0)
 
     tk.Button(frame_buscar_paciente,
               text="LIMPIAR CAMPOS",
@@ -474,6 +478,7 @@ def ventana_principal_admin():
 
     label(frame_buscar_paciente,"DATOS:", 130, 320, COLOR_OSCURO,COLOR_BLANCO,8)
     entrada_datos = entrada(frame_buscar_paciente,130,340,300,30,10 )
+    entrada_datos.focus_set()
 
     tk.Button(frame_buscar_paciente,
               text="BUSCAR",
@@ -482,6 +487,7 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
+              command = botonBuscar
               ).place(x=600, y=340, width=150, height=30)
 
     label(frame_buscar_paciente,"RESULTADO:", 450, 460, COLOR_OSCURO,COLOR_BLANCO,8)
@@ -490,7 +496,7 @@ def ventana_principal_admin():
                          font=("Sans", 10, "bold"),
                          relief="solid", bd=1,
                          bg=COLOR_BLANCO,)
-    resultado.place(x=335, y=480, width=300, height=30)
+    resultado.place(x=335, y=480, width=300, height=90)
 
 
 

@@ -112,9 +112,8 @@ try:
             pacientesNormales.append(tur)
         else:
             pacientesUrgentes.append(tur)
-    messagebox.showinfo("jala","se cargó")
 except:
-    messagebox.showerror("no jala","no se cargó :p")
+    pass
 turnoNormales = len(pacientesNormales)+1
 turnoUrgentes = len(pacientesUrgentes)+1
 def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
@@ -173,3 +172,20 @@ def validacionesDatosNumericos(cui, edad, telefono):
     else:
         messagebox.showwarning("Error al ingresar edad", "Asegurese de que la edad sea un número entero.")
     return False
+
+def buscarPaciente(tipoBusqueda, datoIngresado):
+    if not listadoPacientes:
+        messagebox.showerror("Error al buscar paciente", "Aún no se ha ingresado ningún paciente.")
+        return "No se ha ingresado ningún paciente"
+    elif not datoIngresado:
+        messagebox.showerror("Error al buscar paciente", "No se ingresó un dato para buscar.")
+        return "Ingrese un dato para buscar."
+    else:
+        if tipoBusqueda == "Código de turno":
+            for turno in turnosGenerales:
+                if datoIngresado == turno.codigo:
+                    for paciente in listadoPacientes:
+                        if turno.cui == paciente.cui:
+                            encontrado = paciente
+                            return f"CUI: {encontrado.cui}\nNombre: {encontrado.nombre}\nEdad: {encontrado.edad}\nTeléfono: {encontrado.telefono}\nEstado: {turno.estado}"
+        return "Paciente no encontrado"
