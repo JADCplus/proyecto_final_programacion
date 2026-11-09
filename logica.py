@@ -151,29 +151,37 @@ turnoNormales = len(pacientesNormales)+1
 turnoUrgentes = len(pacientesUrgentes)+1
 def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
     global turnoNormales, turnoUrgentes
-
-    p = Paciente(nombre, edad, cui, telefono, motivo, tipo)
-    confirmar = messagebox.askokcancel("Registro de paciente", "Asegurese de que la información es correcta.\n¿Desea registrar al paciente?")
-    if confirmar:
-        if tipo == "Normal":
-            codigo = "NOR"+str(turnoNormales)
-            turnoNormales+=1
-        else:
-            codigo = "URG"+str(turnoUrgentes)
-            turnoUrgentes+=1
-        tur = Turno(codigo,cui,nombre,"En espera")
-        turnosGenerales.append(tur)
-        if tipo == "Normal":
-            pacientesNormales.append(tur)
-        else:
-            pacientesUrgentes.append(tur)
-        listadoPacientes.append(p)
-        guardarTurnos(pacientesUrgentes+pacientesNormales)
-        guardarPacientesGeneral(listadoPacientes)
-        messagebox.showinfo(f"Paciente registrado","El paciente ha sido registrado correctamente."
-                                                  f"\nEl código de turno del paciente es: {codigo}")
-        return True
-    return False
+    cuiExistente = False
+    if len(listadoPacientes)>0:
+        for paciente in listadoPacientes:
+            if cui == paciente.cui:
+                cuiExistente = True
+                messagebox.showerror("Error al ingresar paciente.","Ya hay un paciente registrado con ese número de CUI.")
+                break
+    if not cuiExistente:
+        p = Paciente(nombre, edad, cui, telefono, motivo, tipo)
+        confirmar = messagebox.askokcancel("Registro de paciente",
+                                           "Asegurese de que la información es correcta.\n¿Desea registrar al paciente?")
+        if confirmar:
+            if tipo == "Normal":
+                codigo = "NOR" + str(turnoNormales)
+                turnoNormales += 1
+            else:
+                codigo = "URG" + str(turnoUrgentes)
+                turnoUrgentes += 1
+            tur = Turno(codigo, cui, nombre, "En espera")
+            turnosGenerales.append(tur)
+            if tipo == "Normal":
+                pacientesNormales.append(tur)
+            else:
+                pacientesUrgentes.append(tur)
+            listadoPacientes.append(p)
+            guardarTurnos(pacientesUrgentes + pacientesNormales)
+            guardarPacientesGeneral(listadoPacientes)
+            messagebox.showinfo(f"Paciente registrado", "El paciente ha sido registrado correctamente."
+                                                        f"\nEl código de turno del paciente es: {codigo}")
+            return True
+        return False
 
 listadoUsuarios = []
 def registrarUsuario(cui, nombre, edad, telefono, usuario, contra, tipo):

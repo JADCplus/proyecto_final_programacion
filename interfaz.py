@@ -443,12 +443,13 @@ def ventana_principal_admin():
             mostrar_paciente.config(text="No hay pacientes por atender.")
             return None
     actualizarTurno()
-    def finalizarAtencion():
+    def finalizarAtencion(accion):
         siguiente = actualizarTurno()
         if siguiente is None:
-            messagebox.showwarning("Error al finalizar atención","No hay turnos pendientes.")
+            messagebox.showwarning(f"Error al {accion}","No hay turnos pendientes.")
         else:
-            logica.finalizarAtencion(siguiente.tipo)
+            if accion == "finalizar":
+                logica.finalizarAtencion(siguiente.tipo)
             actualizarTurno()
 
     tk.Button(frame_gestionar_turno,
@@ -457,7 +458,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
-              command = finalizarAtencion,
+              command = lambda: finalizarAtencion("finalizar"),
               activeforeground=COLOR_OSCURO).place(x=190, y=480, width=190, height=40)
 
 
