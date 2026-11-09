@@ -445,6 +445,10 @@ def ventana_principal_admin():
     def botonBuscar():
         resul = logica.buscarPaciente(lista_busqueda.get(),entrada_datos.get())
         resultado.config(text=resul)
+    def limpiarBusqueda():
+        entrada_datos.delete(0, "end")
+        lista_busqueda.current(0)
+        resultado.config(text="Ingrese un dato.")
 
     frame_buscar_paciente = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
     frame_buscar_paciente.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
@@ -471,6 +475,7 @@ def ventana_principal_admin():
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO,
+              command = limpiarBusqueda
               ).place(x=600, y=220, width=150, height=30)
 
     label(frame_buscar_paciente,"DATOS:", 130, 320, COLOR_OSCURO,COLOR_BLANCO,8)
@@ -489,7 +494,7 @@ def ventana_principal_admin():
 
     label(frame_buscar_paciente,"RESULTADO:", 450, 460, COLOR_OSCURO,COLOR_BLANCO,8)
     resultado = tk.Label(frame_buscar_paciente,
-                         text="resultado",
+                         text="Ingrese un dato.",
                          font=("Sans", 10, "bold"),
                          relief="solid", bd=1,
                          bg=COLOR_BLANCO,)
