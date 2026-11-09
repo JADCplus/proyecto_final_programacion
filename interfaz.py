@@ -576,6 +576,14 @@ def ventana_principal_admin():
     entrada_modificar_cui = entrada(frame_modificar_paciente,365,170,300,30,9)
     entrada_modificar_cui.focus_set()
 
+    tk.Button(frame_modificar_paciente,
+              text="BUSCAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=700, y=170, width=100, height=30)
+
     label(frame_modificar_paciente,"---------------  MODIFICAR DATOS  -------------------------------------------------------------"
                                   "----------------------------------------------------------",30, 250, COLOR_OSCURO, COLOR_BLANCO, 13)
 
@@ -630,6 +638,14 @@ def ventana_principal_admin():
     entrada_modificar_cui_paciente = entrada(frame_modificar_usuario, 365, 140, 300, 30, 10)
     entrada_modificar_cui_paciente.focus_set()
 
+    tk.Button(frame_modificar_usuario,
+              text="BUSCAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=700, y=140, width=100, height=30)
+
     label(frame_modificar_usuario,"---------------  MODIFICAR DATOS  -------------------------------------------------------------"
           "----------------------------------------------------------", 30, 200, COLOR_OSCURO, COLOR_BLANCO, 13)
 
@@ -668,11 +684,379 @@ def ventana_principal_admin():
     actualizar_estadisticas()
     mostrar_frame(frame_principal_admin)
 
-
     ventana_principal_admin.mainloop()
 
+
+
 def ventana_principal_repecionista():
-    pass
+    def mostrar_frame(frame):
+        frame.tkraise()  # funcion para traer el frame al frente
+
+    def label(padre, texto, pos_x, pos_y, color_texto, fondo_texto, tam_texto):
+        tk.Label(padre,
+                 text=texto,
+                 font=("Sans-Serif", tam_texto, "bold"),
+                 fg=color_texto, bg=fondo_texto
+                 ).place(x=pos_x, y=pos_y)
+
+    def boton(padre, texto, pos_x, pos_y, color_texto, fondo_texto, relieve, ancho, alto, comando=None):
+        tk.Button(padre,
+                  text=texto,
+                  font=("Sans-Serif", 8, "bold"),
+                  fg=color_texto, bg=fondo_texto,
+                  activebackground=COLOR_OSCURO,  # color de fondo mientras se hace click
+                  activeforeground=COLOR_BLANCO,  # color de la letra mientras se hace click
+                  relief=relieve, bd=0, cursor="hand2",  # relief: estilo del borde , bd: grosor del borde
+                  anchor="w", command=comando).place(x=pos_x, y=pos_y, width=ancho, height=alto)
+
+    def tarjeta(padre, pos_x, pos_y, ancho, alto, titulo, tam_titulo, tam_numero, con_numero=True):
+        cuadro = tk.Frame(padre,
+                          width=ancho, height=alto,
+                          bg=COLOR_CLARO,
+                          highlightbackground=COLOR_OSCURO,  # color del borde
+                          highlightthickness=4)  # grosor del borde
+
+        cuadro.place(x=pos_x, y=pos_y, width=ancho, height=alto)
+
+        tk.Label(cuadro, text=titulo,
+                 font=("Sans-Serif", tam_titulo, "bold"),
+                 fg=COLOR_OSCURO, bg=COLOR_CLARO,
+                 justify="center").place(relx=0, rely=0.12, relwidth=1)
+
+        if not con_numero:
+            return cuadro, None
+
+        numero = tk.Label(cuadro, text="0",
+                          font=("Sans-Serif", tam_numero, "bold"),
+                          fg=COLOR_PRINCIPAL, bg=COLOR_CLARO)
+        numero.place(relx=0, rely=0.62, relwidth=1)
+        return cuadro, numero
+
+    def entrada(padre, pos_x, pos_y, ancho, alto, tam_fuente):
+        campo = tk.Entry(padre,
+                         font=("Sans-Serif", tam_fuente, "bold"),
+                         relief="flat",
+                         bd=0,
+                         justify="left",
+                         highlightthickness=2
+                         )
+
+        campo.place(x=pos_x, y=pos_y, width=ancho, height=alto)
+
+        return campo
+
+    def actualizar_estadisticas():
+
+        label_fecha_hora.config(text=time.strftime("%d/%m/%Y\n%H:%M:%S"))
+        ventana_principal_recepcionista.after(1000, actualizar_estadisticas)  # se repite cada segundo
 
 
-ventana_principal_admin()
+    ventana_principal_recepcionista = tk.Tk()
+    ventana_principal_recepcionista.title("CLINICA MEDICA")
+    ventana_principal_recepcionista.geometry("1300x770")
+    icono = tk.PhotoImage(file="clinica.png")
+    ventana_principal_recepcionista.iconphoto(False, icono)
+    ventana_principal_recepcionista.resizable(False, False)
+
+    barra_lateral = tk.Canvas(ventana_principal_recepcionista, width=250, height=764, bg=COLOR_PRINCIPAL,
+                              highlightbackground=COLOR_OSCURO,
+                              highlightthickness=3)
+    barra_lateral.place(x=0, y=0)
+
+    # GESTIONES PRINCIPALES
+
+    label(barra_lateral,"GESTIONES",30,25, COLOR_BLANCO,COLOR_PRINCIPAL, 10)
+    boton(barra_lateral,"REGISTRAR PACIENTE",40,70,COLOR_BLANCO,COLOR_PRINCIPAL,"flat",150,25,comando=lambda: mostrar_frame(frame_registrar_paciente))
+    boton(barra_lateral,"GESTIONAR TURNO",40,120,COLOR_BLANCO,COLOR_PRINCIPAL,"flat",150,25,comando=lambda: mostrar_frame(frame_gestionar_turno))
+    boton(barra_lateral,"BUSCAR PACIENTE",40,170,COLOR_BLANCO,COLOR_PRINCIPAL,"flat",150,25,comando=lambda: mostrar_frame(frame_buscar_paciente))
+
+    label(barra_lateral, "=============================", 5, 220, COLOR_BLANCO, COLOR_PRINCIPAL, 10)
+
+    # HISTORIAL
+
+    label(barra_lateral, "HISTORIAL", 30, 270, COLOR_BLANCO, COLOR_PRINCIPAL, 10)
+    boton(barra_lateral, "ACCIONES", 40, 320, COLOR_BLANCO, COLOR_PRINCIPAL, "flat", 150, 25,comando=lambda: mostrar_frame(frame_historial_acciones))
+    boton(barra_lateral, "PACIENTES", 40, 370, COLOR_BLANCO, COLOR_PRINCIPAL, "flat", 150, 25,comando=lambda: mostrar_frame(frame_historial_pacientes))
+
+    # VENTANA PRINCIPAL
+
+    tk.Button(ventana_principal_recepcionista,
+              text="<= VENTANA PRINCIPAL",
+              font=("Sans-Serif", 7, "bold"),
+              fg=COLOR_BLANCO, bg=COLOR_OSCURO,
+              activebackground=COLOR_PRINCIPAL,
+              activeforeground=COLOR_BLANCO,
+              relief="flat", cursor="hand2",
+              command=lambda: mostrar_frame(frame_principal_recepcionista)).place(x=20, y=730, width=120, height=20)
+
+    # Frame Ventana Principal
+    frame_principal_recepcionista = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
+
+    titulo_ventana_principal = tk.Label(frame_principal_recepcionista,
+                                        text="BIENVENIDO: ",
+                                        font=("Sans-Serif", 30, "bold"),
+                                        fg="#0097A7",
+                                        bg="#FFFFFF")
+    titulo_ventana_principal.place(x=270, y=70)
+
+    _, tarjeta_pacientes_espera = tarjeta(frame_principal_recepcionista, 105, 220, 340, 200, "PACIENTES EN\nESPERA", 18, 24)
+    _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_recepcionista, 555, 220, 340, 200, "PACIENTES\nATENDIDOS", 18, 24)
+    _, tarjeta_pacientes_urgencia = tarjeta(frame_principal_recepcionista, 105, 460, 165, 150, "PACIENTES\nEN URGENCIA", 10, 18)
+    _, tarjeta_pacientes_consulta = tarjeta(frame_principal_recepcionista, 290, 460, 165, 150, "PACIENTES\nEN CONSULTA", 10, 18)
+    tarjeta_fecha_hora, _ = tarjeta(frame_principal_recepcionista, 555, 460, 340, 150, "", 10, 10, con_numero=False)
+
+    label_fecha_hora = tk.Label(tarjeta_fecha_hora, text="",
+                                font=("Sans-Serif", 14, "bold"),
+                                fg=COLOR_OSCURO, bg=COLOR_CLARO,
+                                justify="center")
+    label_fecha_hora.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+    frame_principal_recepcionista.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    # Frame Registrar Paciente
+
+    def registrarPacienteNuevo(cui, nombre, edad, numero):
+        if not edad or not cui or not nombre or not numero or not entrada_motivo.get() or not lista_atencion.get():
+            messagebox.showwarning("Error al registrar paciente", "Asegurese de llenar todos los campos.")
+        else:
+            motivo = entrada_motivo.get()
+            tipo = lista_atencion.get()
+            if logica.validacionesDatosNumericos(cui, edad, numero):
+                if logica.registrarPaciente(cui, nombre, edad, numero, motivo, tipo):
+                    limpiarInfoPaciente()
+
+    def limpiarInfoPaciente():
+        entrada_nombre_paciente.delete(0, "end")
+        entrada_telefono_paciente.delete(0, "end")
+        entrada_motivo.delete(0, "end")
+        entrada_edad_paciente.delete(0, "end")
+        entrada_cui_paciente.delete(0, "end")
+        lista_atencion.current(0)
+        entrada_nombre_paciente.focus_set()
+
+    frame_registrar_paciente = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
+    frame_registrar_paciente.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_registrar_paciente,
+                      text="REGISTRO DE PACIENTES",
+                      font=("Sans-Serif", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=350, y=50)
+
+    label(frame_registrar_paciente, "--------------   DATOS PERSONALES   ------------------------------------"
+                                    "----------------------------------------------------------------------------", 30,
+          120, COLOR_OSCURO, COLOR_BLANCO, 13)
+
+    label(frame_registrar_paciente, "NOMBRE COMPLETO", 130, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_nombre_paciente = entrada(frame_registrar_paciente, 130, 200, 300, 30, 10)
+    entrada_nombre_paciente.focus_set()
+
+    label(frame_registrar_paciente, "CUI", 600, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_cui_paciente = entrada(frame_registrar_paciente, 600, 200, 300, 30, 10)
+
+    label(frame_registrar_paciente, "EDAD", 130, 290, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_edad_paciente = entrada(frame_registrar_paciente, 130, 310, 300, 30, 10)
+
+    label(frame_registrar_paciente, "TELEFONO", 600, 290, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_telefono_paciente = entrada(frame_registrar_paciente, 600, 310, 300, 30, 10)
+
+    label(frame_registrar_paciente, "MOTIVO DE CONSULTA", 130, 410, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_motivo = entrada(frame_registrar_paciente, 130, 430, 300, 30, 10)
+
+    label(frame_registrar_paciente, "TIPO DE ATENCION", 600, 410, COLOR_OSCURO, COLOR_BLANCO, 8)
+    lista_atencion = ttk.Combobox(frame_registrar_paciente,
+                                  values=["Normal", "Prioritaria"],
+                                  font=("Sans", 10, "bold"),
+                                  state="readonly",
+                                  )
+    lista_atencion.place(x=600, y=430, width=300, height=30)
+    lista_atencion.current(0)
+
+    tk.Button(frame_registrar_paciente, text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              command=limpiarInfoPaciente
+              ).place(x=250, y=550, width=180, height=50)
+
+    tk.Button(frame_registrar_paciente, text="REGISTRAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              command=lambda: registrarPacienteNuevo(entrada_cui_paciente.get(), entrada_nombre_paciente.get(),
+                                                     entrada_edad_paciente.get(), entrada_telefono_paciente.get())
+              ).place(x=600, y=550, width=180, height=50)
+
+
+    # Frame Gestionar Turno
+
+    frame_gestionar_turno = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
+    frame_gestionar_turno.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_gestionar_turno,
+                      text="GESTIONAR TURNO",
+                      font=("Sans-Serif", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=350, y=150)
+
+    label(frame_gestionar_turno, "TURNO ACTUAL:", 325, 250, COLOR_OSCURO, COLOR_BLANCO, 8)
+
+    mostrar_paciente = tk.Label(frame_gestionar_turno,
+                                text="resultado",
+                                font=("Sans", 10, "bold"),
+                                relief="solid", bd=1,
+                                bg=COLOR_BLANCO, )
+
+    mostrar_paciente.place(x=325, y=275, width=325, height=90)
+
+    tk.Button(frame_gestionar_turno,
+              text="ATENDER TURNO",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=190, y=480, width=190, height=40)
+
+    tk.Button(frame_gestionar_turno,
+              text="CANCELAR TURNO",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=600, y=480, width=190, height=40)
+
+    # Frame Buscar Paciente
+
+    def botonBuscar():
+        resul = logica.buscarPaciente(lista_busqueda.get(), entrada_datos.get())
+        resultado.config(text=resul)
+
+    frame_buscar_paciente = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
+    frame_buscar_paciente.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_buscar_paciente,
+                      text="BUSCAR PACIENTE",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO,
+                      )
+    titulo.place(x=360, y=80)
+
+    label(frame_buscar_paciente, "BUSCAR POR:", 130, 200, COLOR_OSCURO, COLOR_BLANCO, 8)
+    lista_busqueda = ttk.Combobox(frame_buscar_paciente,
+                                  values=["NOMBRE", "CUI", "CODIGO DE TURNO"],
+                                  font=("Sans", 10, "bold"),
+                                  state="readonly", )
+    lista_busqueda.place(x=130, y=220, width=300, height=30)
+    lista_busqueda.current(0)
+
+    tk.Button(frame_buscar_paciente,
+              text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=600, y=220, width=150, height=30)
+
+    label(frame_buscar_paciente, "DATOS:", 130, 320, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_datos = entrada(frame_buscar_paciente, 130, 340, 300, 30, 10)
+    entrada_datos.focus_set()
+
+    tk.Button(frame_buscar_paciente,
+              text="BUSCAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              command=botonBuscar
+              ).place(x=600, y=340, width=150, height=30)
+
+    label(frame_buscar_paciente, "RESULTADO:", 450, 460, COLOR_OSCURO, COLOR_BLANCO, 8)
+    resultado = tk.Label(frame_buscar_paciente,
+                         text="resultado",
+                         font=("Sans", 10, "bold"),
+                         relief="solid", bd=1,
+                         bg=COLOR_BLANCO, )
+    resultado.place(x=335, y=480, width=300, height=90)
+
+    # Frame historial acciones
+
+    frame_historial_acciones = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
+    frame_historial_acciones.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_historial_acciones,
+                      text="HISTORIAL DE ACCIONES",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO
+                      )
+    titulo.place(x=350, y=80)
+
+    tarjeta_historial_acciones = tk.Canvas(frame_historial_acciones,
+                                           width=600, height=475,
+                                           bg=COLOR_CLARO,
+                                           highlightbackground=COLOR_OSCURO,
+                                           highlightthickness=3
+                                           )
+    tarjeta_historial_acciones.place(x=215, y=150)
+
+    tk.Button(frame_historial_acciones,
+              text="DESHACER ULTIMA \nACCION",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO, ).place(x=430, y=680, width=180, height=40)
+
+    # Frame Historial Pacientes
+
+    frame_historial_pacientes = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
+    frame_historial_pacientes.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_historial_pacientes,
+                      text="HISTORIAL DE PACIENTES",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO
+                      )
+    titulo.place(x=350, y=50)
+
+    tarjeta_historial_acciones = tk.Canvas(frame_historial_pacientes,
+                                           width=600, height=525,
+                                           bg=COLOR_CLARO,
+                                           highlightbackground=COLOR_OSCURO,
+                                           highlightthickness=3
+                                           )
+    tarjeta_historial_acciones.place(x=210, y=200)
+
+    label(frame_historial_pacientes, "FILTRAR POR:", 210, 100, COLOR_OSCURO, COLOR_BLANCO, 8)
+
+    lista_historial = ttk.Combobox(frame_historial_pacientes,
+                                   values=["ATENDIDOS", "CANCELADOS", "EN ESPERA"],
+                                   font=("Sans", 10, "bold"),
+                                   state="readonly"
+                                   )
+    lista_historial.place(x=210, y=120, width=300, height=30)
+    lista_historial.current(0)
+
+    tk.Button(frame_historial_pacientes,
+              text="FILTRAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO,
+              ).place(x=660, y=120, width=150, height=30)
+
+    actualizar_estadisticas()
+    mostrar_frame(frame_principal_recepcionista)
+
+    ventana_principal_recepcionista.mainloop()
+
+ventana_principal_repecionista()
+
