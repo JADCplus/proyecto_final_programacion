@@ -160,14 +160,19 @@ def ventana_principal_admin():
         total_de_pacientes = logica.pacientesTotales()
         total_pacientes_consulta = logica.pacientesParaConsulta()
         total_pacientes_urgentes = logica.pacientesParaUrgencia()
-        _, tarjeta_pacientes_espera = tarjeta(frame_principal_admin, 105, 220, 340, 200, "PACIENTES EN\nESPERA", 18, 24,
+        _, tarjeta_pacientes_espera = tarjeta(frame_principal_admin, 105, 190, 340, 150, "PACIENTES EN\nESPERA", 18, 24,
                                               total_de_pacientes)
-        _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_admin, 555, 220, 340, 200, "PACIENTES\nATENDIDOS", 18,
+        _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_admin, 555, 190, 340, 150, "PACIENTES\nATENDIDOS", 18,
                                                  24, 0)
-        _, tarjeta_pacientes_urgencia = tarjeta(frame_principal_admin, 105, 460, 165, 150, "PACIENTES\nPARA URGENCIA",
+        _, tarjeta_pacientes_urgencia = tarjeta(frame_principal_admin, 105, 390, 165, 150, "PACIENTES\nPARA URGENCIA",
                                                 10, 18, total_pacientes_urgentes)
-        _, tarjeta_pacientes_consulta = tarjeta(frame_principal_admin, 290, 460, 165, 150, "PACIENTES\nPARA CONSULTA",
+        _, tarjeta_pacientes_consulta = tarjeta(frame_principal_admin, 290, 390, 165, 150, "PACIENTES\nPARA CONSULTA",
                                                 10, 18, total_pacientes_consulta)
+        _, tarjeta_pacientes_registrados = tarjeta(frame_principal_admin, 555,390, 165, 150, "PACIENTES\nREGISTRADOS",
+                                                10, 18, 0)
+        _, tarjeta_turnos_cancelados = tarjeta(frame_principal_admin, 740,390, 165, 150, "TURNOS\nCANCELADOS",
+                                                10, 18, 0)
+
         label_fecha_hora.config(text=time.strftime("%d/%m/%Y\n%H:%M:%S"))
         ventana_principal_admin.after(1000, actualizar_estadisticas)  # se repite cada segundo
 
@@ -230,7 +235,7 @@ def ventana_principal_admin():
                                         bg="#FFFFFF")
     titulo_ventana_principal.place(x=270, y=70)
 
-    tarjeta_fecha_hora, _ = tarjeta(frame_principal_admin, 555, 460, 340, 150, "", 10, 10, 0,con_numero=False)
+    tarjeta_fecha_hora, _ = tarjeta(frame_principal_admin, 345, 590, 340, 150, "", 10, 10, 0,con_numero=False)
 
     label_fecha_hora = tk.Label(tarjeta_fecha_hora, text="",
                                 font=("Sans-Serif", 14, "bold"),
@@ -352,7 +357,8 @@ def ventana_principal_admin():
                       )
     titulo.place(x=330, y=50)
 
-    label(frame_nuevo_usuario, "DATOS PERSONALES", 130, 120, COLOR_OSCURO, COLOR_BLANCO, 13)
+    label(frame_nuevo_usuario, "--------------   DATOS PERSONALES   ------------------------------------"
+                                   "----------------------------------------------------------------------------", 30, 120, COLOR_OSCURO, COLOR_BLANCO, 13)
 
     label(frame_nuevo_usuario, "NOMBRE COMPLETO", 130, 180, COLOR_OSCURO, COLOR_BLANCO, 8)
     entrada_nombre = entrada(frame_nuevo_usuario, 130, 200, 300, 30, 10)
