@@ -195,8 +195,8 @@ def ventana_principal_admin():
     # INFORMACION
 
     label(barra_lateral,"ADMINISTRAR INFORMACION",30, 520, COLOR_BLANCO, COLOR_PRINCIPAL,10)
-    boton(barra_lateral,"MODIFICAR USUARIO", 40,570,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_modificar_usuario))
-    boton(barra_lateral,"MODIFICAR PACIENTE", 40,620,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_principal_admin))
+    boton(barra_lateral,"MODIFICAR PACIENTE", 40,570,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_modificar_paciente))
+    boton(barra_lateral,"MODIFICAR USUARIO", 40,620,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_modificar_usuario))
 
 
     # VENTANA PRINCIPAL
@@ -268,7 +268,8 @@ def ventana_principal_admin():
                       )
     titulo.place(x=350, y=50)
 
-    label(frame_registrar_paciente,"DATOS PERSONALES",130,120,COLOR_OSCURO,COLOR_BLANCO,13)
+    label(frame_registrar_paciente,"--------------   DATOS PERSONALES   ------------------------------------"
+                                   "----------------------------------------------------------------------------",30,120,COLOR_OSCURO,COLOR_BLANCO,13)
 
     label(frame_registrar_paciente,"NOMBRE COMPLETO", 130,180,COLOR_OSCURO,COLOR_BLANCO,8)
     entrada_nombre_paciente = entrada(frame_registrar_paciente, 130,200,300,30, 10)
@@ -547,6 +548,7 @@ def ventana_principal_admin():
                                    state="readonly"
                                    )
     lista_historial.place(x=210, y=120,width=300, height=30)
+    lista_historial.current(0)
 
     tk.Button(frame_historial_pacientes,
               text="FILTRAR",
@@ -557,12 +559,110 @@ def ventana_principal_admin():
               activeforeground=COLOR_OSCURO,
               ).place(x=660, y=120, width=150, height=30)
 
+    # Frame Modificar Paciente
+
+    frame_modificar_paciente = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
+    frame_modificar_paciente.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
+
+    titulo = tk.Label(frame_modificar_paciente,
+                      text="MODIFICAR USUARIO",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO
+                      )
+    titulo.place(x=370, y=70)
+
+    label(frame_modificar_paciente,"INGRESE EL CUI:",365,150,COLOR_OSCURO,COLOR_BLANCO,8)
+
+    entrada_modificar_cui = entrada(frame_modificar_paciente,365,170,300,30,9)
+    entrada_modificar_cui.focus_set()
+
+    label(frame_modificar_paciente,"---------------  MODIFICAR DATOS  -------------------------------------------------------------"
+                                  "----------------------------------------------------------",30, 250, COLOR_OSCURO, COLOR_BLANCO, 13)
+
+    label(frame_modificar_paciente, "MODIFICAR NOMBRE:", 130, 300, COLOR_OSCURO, COLOR_BLANCO, 9)
+    entrada_nuevo_nombre_paciente = entrada(frame_modificar_paciente, 130, 320, 300, 30, 10)
+
+    label(frame_modificar_paciente, "MODIFICAR EDAD:", 600, 300, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_nueva_edad_paciente = entrada(frame_modificar_paciente, 600, 320, 300, 30, 10)
+
+    label(frame_modificar_paciente, "MODIFICAR TELEFONO:",130,450,COLOR_OSCURO, COLOR_BLANCO, 9)
+    entrada_nuevo_telefono_paciente = entrada(frame_modificar_paciente, 130, 470, 300, 30, 10)
+
+    label(frame_modificar_paciente, "MODIFICAR TIPO DE ATENCION:", 600, 450, COLOR_OSCURO, COLOR_BLANCO, 9)
+    lista_tipo_usuario = ttk.Combobox(frame_modificar_paciente,
+                                      values=["NORMAL", "PRIORITARIA"],
+                                      font=("Sans", 10, "bold"),
+                                      state="readonly",
+                                      )
+    lista_tipo_usuario.place(x=600, y=470, width=300, height=30)
+    lista_tipo_usuario.current(0)
+
+    tk.Button(frame_modificar_paciente,
+              text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=600, y=600, width=200, height=40)
+
+    tk.Button(frame_modificar_paciente,
+              text="MODIFICAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=230, y=600, width=200, height=40)
+
     # Frame Modificar Usuario
 
     frame_modificar_usuario = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
     frame_modificar_usuario.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
 
+    titulo = tk.Label(frame_modificar_usuario,
+                      text="MODIFICAR PACIENTE",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO
+                      )
+    titulo.place(x=370, y=50)
 
+    label(frame_modificar_usuario, "INGRESE EL CUI:", 365, 120, COLOR_OSCURO, COLOR_BLANCO, 8)
+
+    entrada_modificar_cui_paciente = entrada(frame_modificar_usuario, 365, 140, 300, 30, 10)
+    entrada_modificar_cui_paciente.focus_set()
+
+    label(frame_modificar_usuario,"---------------  MODIFICAR DATOS  -------------------------------------------------------------"
+          "----------------------------------------------------------", 30, 200, COLOR_OSCURO, COLOR_BLANCO, 13)
+
+    label(frame_modificar_usuario,"MODIFICAR NOMBRE:",130, 250, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_modificar_nombre_usuario = entrada(frame_modificar_usuario, 130, 270, 300, 30, 10)
+
+    label(frame_modificar_usuario,"MODIFICAR EDAD:", 600, 250, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_modificar_edad_usuario = entrada(frame_modificar_usuario, 600, 270, 300, 30, 10)
+
+    label(frame_modificar_usuario,"MODIFICAR USUARIO:", 130, 400, COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_modificar_usuario = entrada(frame_modificar_usuario, 130, 420, 300, 30, 10)
+
+    label(frame_modificar_usuario,"MODIFICAR CONTRASEÑA",600,400,COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_modificar_password = entrada(frame_modificar_usuario, 600, 420, 300, 30, 10)
+
+    label(frame_modificar_usuario,"MODIFICAR TELEFONO:",365,550,COLOR_OSCURO, COLOR_BLANCO, 8)
+    entrada_modificar_telefono_usuario = entrada(frame_modificar_usuario, 365, 570, 300, 30, 10)
+
+    tk.Button(frame_modificar_usuario,
+              text="LIMPIAR CAMPOS",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=600, y=675, width=200, height=40)
+
+    tk.Button(frame_modificar_usuario,
+              text="MODIFICAR",
+              font=("Sans", 10, "bold"),
+              fg=COLOR_BLANCO,
+              bg=COLOR_PRINCIPAL,
+              activebackground=COLOR_BLANCO,
+              activeforeground=COLOR_OSCURO).place(x=230, y=675, width=200, height=40)
 
 
     actualizar_estadisticas()
