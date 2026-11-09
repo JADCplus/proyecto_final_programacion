@@ -89,6 +89,13 @@ def cargarPacientes(nombre_archivo="pacientesGeneral.json"):
         datosCargados.append(paci)
     return datosCargados
 
+def pacientesTotales():
+    return len(pacientesNormales)+len(pacientesUrgentes)
+def pacientesParaConsulta():
+    return len(pacientesNormales)
+def pacientesParaUrgencia():
+    return len(pacientesUrgentes)
+
 def cargarTurnos(nombre_archivo = "infoTurnos.json"):
     with open(nombre_archivo, "r", encoding="utf-8") as f:
         listaCargada = json.load(f)
@@ -104,6 +111,8 @@ def cargarTurnos(nombre_archivo = "infoTurnos.json"):
 
 pacientesNormales = []
 pacientesUrgentes = []
+listadoPacientes = []
+turnosGenerales = []
 try:
     listadoPacientes = cargarPacientes()
     turnosGenerales = cargarTurnos()
@@ -129,6 +138,7 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
             codigo = "URG"+str(turnoUrgentes)
             turnoUrgentes+=1
         tur = Turno(codigo,cui,nombre,"En espera")
+        turnosGenerales.append(tur)
         if tipo == "Normal":
             pacientesNormales.append(tur)
         else:
@@ -181,11 +191,18 @@ def buscarPaciente(tipoBusqueda, datoIngresado):
         messagebox.showerror("Error al buscar paciente", "No se ingresó un dato para buscar.")
         return "Ingrese un dato para buscar."
     else:
-        if tipoBusqueda == "Código de turno":
+        if tipoBusqueda == "CÓDIGO DE TURNO":
             for turno in turnosGenerales:
                 if datoIngresado == turno.codigo:
                     for paciente in listadoPacientes:
                         if turno.cui == paciente.cui:
+                            encontrado = paciente
+                            return f"CUI: {encontrado.cui}\nNombre: {encontrado.nombre}\nEdad: {encontrado.edad}\nTeléfono: {encontrado.telefono}\nEstado: {turno.estado}"
+        else:
+            for paciente in listadoPacientes:
+                if datoIngresado == paciente.cui:
+                    for turno in turnosGenerales:
+                        if turno.cui == datoIngresado:
                             encontrado = paciente
                             return f"CUI: {encontrado.cui}\nNombre: {encontrado.nombre}\nEdad: {encontrado.edad}\nTeléfono: {encontrado.telefono}\nEstado: {turno.estado}"
         return "Paciente no encontrado"

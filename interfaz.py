@@ -12,7 +12,6 @@ COLOR_CLARO = "#E0F7FA"
 COLOR_BLANCO = "#FFFFFF"
 COLOR_GRIS = "#696969"
 
-
 # ventana login
 def login():
     ventana_login = tk.Tk()
@@ -121,7 +120,7 @@ def ventana_principal_admin():
                   relief=relieve, bd=0, cursor="hand2", #relief: estilo del borde , bd: grosor del borde
                   anchor="w", command=comando).place(x=pos_x, y=pos_y, width=ancho, height=alto)
 
-    def tarjeta(padre,pos_x, pos_y,ancho, alto, titulo, tam_titulo, tam_numero, con_numero=True  ):
+    def tarjeta(padre,pos_x, pos_y,ancho, alto, titulo, tam_titulo, tam_numero, textoNumero, con_numero=True  ):
         cuadro = tk.Frame(padre,
                            width=ancho, height=alto,
                            bg=COLOR_CLARO,
@@ -138,7 +137,7 @@ def ventana_principal_admin():
         if not con_numero:
             return cuadro, None
 
-        numero = tk.Label(cuadro, text="0",
+        numero = tk.Label(cuadro, text=f"{textoNumero}",
                           font=("Sans-Serif", tam_numero, "bold"),
                           fg=COLOR_PRINCIPAL, bg=COLOR_CLARO)
         numero.place(relx=0, rely=0.62, relwidth=1)
@@ -158,7 +157,17 @@ def ventana_principal_admin():
         return campo
 
     def actualizar_estadisticas():
-
+        total_de_pacientes = logica.pacientesTotales()
+        total_pacientes_consulta = logica.pacientesParaConsulta()
+        total_pacientes_urgentes = logica.pacientesParaUrgencia()
+        _, tarjeta_pacientes_espera = tarjeta(frame_principal_admin, 105, 220, 340, 200, "PACIENTES EN\nESPERA", 18, 24,
+                                              total_de_pacientes)
+        _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_admin, 555, 220, 340, 200, "PACIENTES\nATENDIDOS", 18,
+                                                 24, 0)
+        _, tarjeta_pacientes_urgencia = tarjeta(frame_principal_admin, 105, 460, 165, 150, "PACIENTES\nPARA URGENCIA",
+                                                10, 18, total_pacientes_urgentes)
+        _, tarjeta_pacientes_consulta = tarjeta(frame_principal_admin, 290, 460, 165, 150, "PACIENTES\nPARA CONSULTA",
+                                                10, 18, total_pacientes_consulta)
         label_fecha_hora.config(text=time.strftime("%d/%m/%Y\n%H:%M:%S"))
         ventana_principal_admin.after(1000, actualizar_estadisticas)  # se repite cada segundo
 
@@ -221,11 +230,7 @@ def ventana_principal_admin():
                                         bg="#FFFFFF")
     titulo_ventana_principal.place(x=270, y=70)
 
-    _, tarjeta_pacientes_espera = tarjeta(frame_principal_admin, 105, 220, 340, 200,"PACIENTES EN\nESPERA", 18,24)
-    _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_admin, 555, 220, 340, 200,"PACIENTES\nATENDIDOS", 18,24)
-    _, tarjeta_pacientes_urgencia = tarjeta(frame_principal_admin, 105, 460, 165, 150,"PACIENTES\nEN URGENCIA", 10, 18)
-    _, tarjeta_pacientes_consulta = tarjeta(frame_principal_admin, 290, 460, 165, 150,"PACIENTES\nEN CONSULTA", 10, 18)
-    tarjeta_fecha_hora, _ = tarjeta(frame_principal_admin, 555, 460, 340, 150, "", 10, 10, con_numero=False)
+    tarjeta_fecha_hora, _ = tarjeta(frame_principal_admin, 555, 460, 340, 150, "", 10, 10, 0,con_numero=False)
 
     label_fecha_hora = tk.Label(tarjeta_fecha_hora, text="",
                                 font=("Sans-Serif", 14, "bold"),
@@ -453,7 +458,7 @@ def ventana_principal_admin():
 
     label(frame_buscar_paciente,"BUSCAR POR:",130, 200, COLOR_OSCURO,COLOR_BLANCO,8)
     lista_busqueda = ttk.Combobox(frame_buscar_paciente,
-                                  values=["NOMBRE", "CUI", "CODIGO DE TURNO"],
+                                  values=["CUI", "CÓDIGO DE TURNO"],
                                   font=("Sans", 10, "bold"),
                                   state="readonly", )
     lista_busqueda.place(x=130, y=220, width=300, height=30)
@@ -1058,5 +1063,5 @@ def ventana_principal_repecionista():
 
     ventana_principal_recepcionista.mainloop()
 
-ventana_principal_repecionista()
+ventana_principal_admin()
 
