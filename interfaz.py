@@ -258,6 +258,7 @@ def ventana_principal_admin():
             if logica.validacionesDatosNumericos(cui, edad, numero):
                 if logica.registrarPaciente(cui,nombre,edad,numero,motivo,tipo):
                     limpiarInfoPaciente()
+                    actualizarTurno()
 
     def limpiarInfoPaciente():
         entrada_nombre_paciente.delete(0, "end")
@@ -419,7 +420,7 @@ def ventana_principal_admin():
                       )
     titulo.place(x=350, y=150)
 
-    label(frame_gestionar_turno,"TURNO ACTUAL:",325,250, COLOR_OSCURO, COLOR_BLANCO, 8)
+    label(frame_gestionar_turno,"EN TURNO:",325,250, COLOR_OSCURO, COLOR_BLANCO, 8)
 
     mostrar_paciente = tk.Label(frame_gestionar_turno,
                                 text="resultado",
@@ -429,12 +430,34 @@ def ventana_principal_admin():
 
     mostrar_paciente.place(x=325, y=275, width=325, height=90)
 
+    def actualizarTurno():
+        if logica.pacientesParaUrgencia() > 0:
+            en_atencion = logica.atenderUrgencia()
+            mostrar_paciente.config(text=f"CUI: {en_atencion.cui}\nNombre: {en_atencion.nombre}\nEdad: {en_atencion.edad}\nTeléfono: {en_atencion.telefono}")
+            return en_atencion
+        elif logica.pacientesParaConsulta() > 0:
+            en_atencion = logica.atenderConsulta()
+            mostrar_paciente.config(text=f"CUI: {en_atencion.cui}\nNombre: {en_atencion.nombre}\nEdad: {en_atencion.edad}\nTeléfono: {en_atencion.telefono}")
+            return en_atencion
+        else:
+            mostrar_paciente.config(text="No hay pacientes por atender.")
+            return None
+    actualizarTurno()
+    def finalizarAtencion():
+        siguiente = actualizarTurno()
+        if siguiente is None:
+            messagebox.showwarning("Error al finalizar atención","No hay turnos pendientes.")
+        else:
+            logica.finalizarAtencion(siguiente.tipo)
+            actualizarTurno()
+
     tk.Button(frame_gestionar_turno,
-              text="ATENDER TURNO",
+              text="FINALIZAR ATENCIÓN",
               font=("Sans", 10, "bold"),
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = finalizarAtencion,
               activeforeground=COLOR_OSCURO).place(x=190, y=480, width=190, height=40)
 
 

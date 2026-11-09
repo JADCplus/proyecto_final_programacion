@@ -1,4 +1,5 @@
 from tkinter import messagebox
+from collections import deque
 import json
 
 class Persona:
@@ -37,6 +38,9 @@ class Paciente(Persona):
         super().__init__(nombre, edad, cui, telefono)
         self.__motivo = motivo
         self.__tipo = tipo
+    @property
+    def tipo(self):
+        return self.__tipo
 
 class Usuario(Persona):
     def __init__(self, nombre, edad, cui, telefono, usuario, contra, tipo):
@@ -91,10 +95,30 @@ def cargarPacientes(nombre_archivo="pacientesGeneral.json"):
 
 def pacientesTotales():
     return len(pacientesNormales)+len(pacientesUrgentes)
+
 def pacientesParaConsulta():
     return len(pacientesNormales)
+def atenderConsulta():
+    for paciente in listadoPacientes:
+        if paciente.cui == pacientesNormales[0].cui:
+            return paciente
+
 def pacientesParaUrgencia():
     return len(pacientesUrgentes)
+def atenderUrgencia():
+    for paciente in listadoPacientes:
+        if paciente.cui == pacientesUrgentes[0].cui:
+            return paciente
+
+def finalizarAtencion(tipo):
+    confirmacion = messagebox.askyesno("Confirmación de finalización", "¿Desea finalizar la atención del paciente?")
+    if confirmacion:
+        if tipo == "Normal":
+            pacientesNormales.popleft()
+        else:
+            pacientesUrgentes.popleft()
+        guardarTurnos(pacientesUrgentes + pacientesNormales)
+        messagebox.showinfo("Atención finalizada", "Se ha atentido al paciente.")
 
 def cargarTurnos(nombre_archivo = "infoTurnos.json"):
     with open(nombre_archivo, "r", encoding="utf-8") as f:
@@ -109,8 +133,8 @@ def cargarTurnos(nombre_archivo = "infoTurnos.json"):
         datosCargados.append(turn)
     return datosCargados
 
-pacientesNormales = []
-pacientesUrgentes = []
+pacientesNormales = deque()
+pacientesUrgentes = deque()
 listadoPacientes = []
 turnosGenerales = []
 try:
