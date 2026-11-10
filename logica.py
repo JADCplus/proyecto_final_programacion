@@ -51,6 +51,9 @@ class Usuario(Persona):
         self.__usuario = usuario
         self.__contra = contra
         self.__tipo = tipo
+    @property
+    def usuario(self):
+        return self.__usuario
 
 class Turno:
     def __init__(self, codigo, cui, nombre,estado):
@@ -241,13 +244,48 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
         return False
 
 listadoUsuarios = []
+def guardarUsuarios(lista_objetos, nombre_archivo="usuarios.json"):
+    datos_preparados = [p.__dict__ for p in lista_objetos]
+    with open(nombre_archivo, "w", encoding="utf-8") as info:
+        json.dump(datos_preparados, info, indent=4, ensure_ascii=False)
+def cargarUsuarios(nombre_archivo="usuarios.json"):
+    with open(nombre_archivo, "r", encoding="utf-8") as f:
+        listaCargada = json.load(f)
+    datosCargados=[]
+    for lis in listaCargada:
+        nombre = lis.pop("_Persona__nombre")
+        edad = lis.pop("_Persona__edad")
+        cui = lis.pop("_Persona__cui")
+        telefono = lis.pop("_Persona__telefono")
+        usuario = lis.pop("_Usuario__usuario")
+        contra = lis.pop("_Usuario__contra")
+        tipo = lis.pop("_Usuario__tipo")
+        usua = Usuario(nombre,edad,cui,telefono,usuario,contra,tipo)
+        datosCargados.append(usua)
+    return datosCargados
+try:
+    listadoUsuarios = cargarUsuarios()
+except:
+    pass
 def registrarUsuario(cui, nombre, edad, telefono, usuario, contra, tipo):
     u = Usuario(nombre,edad,cui,telefono,usuario,contra,tipo)
-    confirmar = messagebox.askokcancel("Registro de usuario","Asegurese de que la información es correcta.\n¿Desea registrar el usuario?")
-    if confirmar:
-        listadoUsuarios.append(u)
-        messagebox.showinfo("Usuario registrado", "El usuario ha sido registrado correctamente.")
-        return True
+    existente = False
+    for usu in listadoUsuarios:
+        if usu.cui == cui:
+            existente = True
+            messagebox.showwarning("Error al registrar usuario", "Ya hay un usuario con ese número de CUI.")
+            break
+        elif usu.usuario == usuario:
+            existente = True
+            messagebox.showwarning("Error al registrar usuario", "Ese nombre de usuario ya está en uso.")
+            break
+    if not existente:
+        confirmar = messagebox.askokcancel("Registro de usuario","Asegurese de que la información es correcta.\n¿Desea registrar el usuario?")
+        if confirmar:
+            listadoUsuarios.append(u)
+            messagebox.showinfo("Usuario registrado", "El usuario ha sido registrado correctamente.")
+            guardarUsuarios(listadoUsuarios)
+            return True
     return False
 
 def validacionesDatosNumericos(cui, edad, telefono):
