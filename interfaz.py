@@ -430,11 +430,11 @@ def ventana_principal_admin():
     def actualizarTurno():
         if logica.pacientesParaUrgencia() > 0:
             en_atencion = logica.atenderUrgencia()
-            mostrar_paciente.config(text=f"CUI: {en_atencion.cui}\nNombre: {en_atencion.nombre}\nEdad: {en_atencion.edad}\nTeléfono: {en_atencion.telefono}")
+            mostrar_paciente.config(text=f"CUI: {en_atencion.cui}\nNombre: {en_atencion.nombre}\nEdad: {en_atencion.edad} años\nMotivo: {en_atencion.motivo}\nTeléfono: {en_atencion.telefono}")
             return en_atencion
         elif logica.pacientesParaConsulta() > 0:
             en_atencion = logica.atenderConsulta()
-            mostrar_paciente.config(text=f"CUI: {en_atencion.cui}\nNombre: {en_atencion.nombre}\nEdad: {en_atencion.edad}\nTeléfono: {en_atencion.telefono}")
+            mostrar_paciente.config(text=f"CUI: {en_atencion.cui}\nNombre: {en_atencion.nombre}\nEdad: {en_atencion.edad} años\nMotivo: {en_atencion.motivo}\nTeléfono: {en_atencion.telefono}")
             return en_atencion
         else:
             mostrar_paciente.config(text="No hay pacientes por atender.")
@@ -613,8 +613,41 @@ def ventana_principal_admin():
 
     label(frame_modificar_paciente,"INGRESE EL CUI:",365,150,COLOR_OSCURO,COLOR_BLANCO,8)
 
-    entrada_modificar_cui = entrada(frame_modificar_paciente,365,170,300,30,9)
-    entrada_modificar_cui.focus_set()
+    cui_paciente_para_modificar = entrada(frame_modificar_paciente,365,170,300,30,9)
+    cui_paciente_para_modificar.focus_set()
+
+    def limpiarTodosLosCamposPaciente():
+        limpiarModificarPaciente()
+        cui_paciente_para_modificar.delete(0, "end")
+        cui_paciente_para_modificar.focus_set()
+    def limpiarModificarPaciente():
+        entrada_nuevo_nombre_paciente.delete(0, "end")
+        entrada_nueva_edad_paciente.delete(0, "end")
+        entrada_nuevo_telefono_paciente.delete(0, "end")
+        entrada_nuevo_motivo_paciente.delete(0, "end")
+    def buscarParaModificar():
+        limpiarModificarPaciente()
+        if not cui_paciente_para_modificar.get():
+            messagebox.showerror("Error al buscar paciente","Asegurese de ingresar un número de CUI.")
+        else:
+            pacienteEncontrado = logica.pacienteParaModificar(cui_paciente_para_modificar.get())
+            if pacienteEncontrado is not None:
+                entrada_nuevo_nombre_paciente.insert(0,f"{pacienteEncontrado.nombre}")
+                entrada_nueva_edad_paciente.insert(0,f"{pacienteEncontrado.edad}")
+                entrada_nuevo_telefono_paciente.insert(0,f"{pacienteEncontrado.telefono}")
+                entrada_nuevo_motivo_paciente.insert(0,f"{pacienteEncontrado.motivo}")
+                entrada_nuevo_nombre_paciente.focus_set()
+    def confirmarModificacionPaciente():
+        if not cui_paciente_para_modificar.get():
+            messagebox.showerror("Error al modificar información", "Asegurese de ingresar un número de CUI.")
+        elif not entrada_nuevo_nombre_paciente.get() or not entrada_nuevo_telefono_paciente.get() or not entrada_nuevo_motivo_paciente.get() or not entrada_nueva_edad_paciente.get():
+            messagebox.showwarning("Error al modificar información", "Asegurese de que todos los campos estén llenos.")
+        else:
+            if logica.validacionesDatosNumericos(cui_paciente_para_modificar.get(), entrada_nueva_edad_paciente.get(),entrada_nuevo_telefono_paciente.get()):
+                logica.modificarInfoPaciente(cui_paciente_para_modificar.get(), entrada_nuevo_nombre_paciente.get(),int(entrada_nueva_edad_paciente.get()),
+                                             int(entrada_nuevo_telefono_paciente.get()),entrada_nuevo_motivo_paciente.get())
+                limpiarTodosLosCamposPaciente()
+                actualizarTurno()
 
     tk.Button(frame_modificar_paciente,
               text="BUSCAR",
@@ -622,6 +655,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = buscarParaModificar,
               activeforeground=COLOR_OSCURO).place(x=700, y=170, width=100, height=30)
 
     label(frame_modificar_paciente,"---------------  MODIFICAR DATOS  -------------------------------------------------------------"
@@ -636,14 +670,8 @@ def ventana_principal_admin():
     label(frame_modificar_paciente, "MODIFICAR TELEFONO:",130,450,COLOR_OSCURO, COLOR_BLANCO, 9)
     entrada_nuevo_telefono_paciente = entrada(frame_modificar_paciente, 130, 470, 300, 30, 10)
 
-    label(frame_modificar_paciente, "MODIFICAR TIPO DE ATENCION:", 600, 450, COLOR_OSCURO, COLOR_BLANCO, 9)
-    lista_tipo_usuario = ttk.Combobox(frame_modificar_paciente,
-                                      values=["NORMAL", "PRIORITARIA"],
-                                      font=("Sans", 10, "bold"),
-                                      state="readonly",
-                                      )
-    lista_tipo_usuario.place(x=600, y=470, width=300, height=30)
-    lista_tipo_usuario.current(0)
+    label(frame_modificar_paciente, "MODIFICAR MOTIVO:", 600, 450, COLOR_OSCURO, COLOR_BLANCO, 9)
+    entrada_nuevo_motivo_paciente = entrada(frame_modificar_paciente, 600, 470, 300, 30, 10)
 
     tk.Button(frame_modificar_paciente,
               text="LIMPIAR CAMPOS",
@@ -651,6 +679,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = limpiarTodosLosCamposPaciente,
               activeforeground=COLOR_OSCURO).place(x=600, y=600, width=200, height=40)
 
     tk.Button(frame_modificar_paciente,
@@ -659,6 +688,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = confirmarModificacionPaciente,
               activeforeground=COLOR_OSCURO).place(x=230, y=600, width=200, height=40)
 
     # Frame Modificar Usuario

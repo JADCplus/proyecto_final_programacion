@@ -25,13 +25,10 @@ class Persona:
         self.__nombre = nombre
     @edad.setter
     def edad(self, edad):
-        if edad.isdigit():
-            if 0 <= edad <= 120:
-                self.__edad = edad
-            else:
-                messagebox.showwarning("Error al ingresar edad", "Asegurese de ingresar una edad válida.")
-        else:
-            messagebox.showwarning("Error al ingresar edad", "Asegurese de que la edad sea un número entero.")
+        self.__edad = edad
+    @telefono.setter
+    def telefono(self, telefono):
+        self.__telefono = telefono
 
 class Paciente(Persona):
     def __init__(self, nombre, edad, cui, telefono, motivo, tipo):
@@ -41,6 +38,12 @@ class Paciente(Persona):
     @property
     def tipo(self):
         return self.__tipo
+    @property
+    def motivo(self):
+        return self.__motivo
+    @motivo.setter
+    def motivo(self, motivo):
+        self.__motivo = motivo
 
 class Usuario(Persona):
     def __init__(self, nombre, edad, cui, telefono, usuario, contra, tipo):
@@ -67,6 +70,9 @@ class Turno:
     @property
     def estado(self):
         return self.__estado
+    @nombre.setter
+    def nombre(self,nombre):
+        self.__nombre = nombre
     @estado.setter
     def estado(self, estado):
         self.__estado = estado
@@ -275,7 +281,7 @@ def buscarPaciente(tipoBusqueda, datoIngresado):
         return "Ingrese un dato para buscar."
     else:
         if tipoBusqueda == "CÓDIGO DE TURNO":
-            for turno in turnosGenerales:
+            for turno in historialTurnos:
                 if datoIngresado == turno.codigo:
                     for paciente in listadoPacientes:
                         if turno.cui == paciente.cui:
@@ -284,8 +290,43 @@ def buscarPaciente(tipoBusqueda, datoIngresado):
         else:
             for paciente in listadoPacientes:
                 if datoIngresado == paciente.cui:
-                    for turno in turnosGenerales:
+                    for turno in historialTurnos:
                         if turno.cui == datoIngresado:
                             encontrado = paciente
                             return f"CUI: {encontrado.cui}\nNombre: {encontrado.nombre}\nEdad: {encontrado.edad}\nTeléfono: {encontrado.telefono}\nEstado: {turno.estado}"
         return "Paciente no encontrado"
+def pacienteParaModificar(cui):
+    for paci in listadoPacientes:
+        if paci.cui == cui:
+            return paci
+    messagebox.showwarning("Paciente no encontrado", "No se encontró ningún paciente con ese\nnúmero de CUI.")
+    return None
+def modificarInfoPaciente(cui,nombre,edad,telefono,motivo):
+    encontrado = False
+    for paci in listadoPacientes:
+        if paci.cui == cui:
+            paci.nombre=nombre
+            paci.edad=edad
+            paci.telefono=telefono
+            paci.motivo=motivo
+            guardarPacientesGeneral(listadoPacientes)
+            encontrado = True
+            break
+    for turno in historialTurnos:
+        if turno.cui == cui:
+            turno.nombre=nombre
+            guardarHistorialTurnos(historialTurnos)
+            break
+    for turno in pacientesNormales:
+        if turno.cui == cui:
+            turno.nombre=nombre
+            break
+    for turno in pacientesUrgentes:
+        if turno.cui == cui:
+            turno.nombre=nombre
+            break
+    guardarTurnos(pacientesUrgentes + pacientesNormales)
+    if not encontrado:
+        messagebox.showwarning("Error al modificar", "Asegurese de no modificar el número de CUI.")
+    else:
+        messagebox.showinfo("Información modificada", "La información del paciente se modificó correctamente.")
