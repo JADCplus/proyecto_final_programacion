@@ -1,0 +1,18 @@
+[
+    {
+        "_Persona__nombre": "Maria",
+        "_Persona__edad": "45",
+        "_Persona__cui": "5555666677778",
+        "_Persona__telefono": "44556677",
+        "_Paciente__motivo": "Dolor de cabeza",
+        "_Paciente__tipo": "Normal"
+    },
+    {
+        "_Persona__nombre": "Pedro",
+        "_Persona__edad": "34",
+        "_Persona__cui": "1234123412341",
+        "_Persona__telefono": "99889988",
+        "_Paciente__motivo": "Dolor de estomago",
+        "_Paciente__tipo": "Normal"
+    }
+]

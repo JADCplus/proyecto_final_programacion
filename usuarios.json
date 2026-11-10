@@ -1,0 +1,20 @@
+[
+    {
+        "_Persona__nombre": "Javier Gómez",
+        "_Persona__edad": "24",
+        "_Persona__cui": "1234123412341",
+        "_Persona__telefono": "12345678",
+        "_Usuario__user": "jaba123",
+        "_Usuario__contra": "contra123",
+        "_Usuario__tipo": "Administrador"
+    },
+    {
+        "_Persona__nombre": "Julian de Leon",
+        "_Persona__edad": "23",
+        "_Persona__cui": "9999888877776",
+        "_Persona__telefono": "00998877",
+        "_Usuario__user": "julian321",
+        "_Usuario__contra": "1357",
+        "_Usuario__tipo": "Recepcionista"
+    }
+]

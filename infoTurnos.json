@@ -1,0 +1,14 @@
+[
+    {
+        "_Turno__codigo": "NOR0",
+        "_Turno__cui": "5555666677778",
+        "_Turno__nombre": "Maria",
+        "_Turno__estado": "En espera"
+    },
+    {
+        "_Turno__codigo": "NOR1",
+        "_Turno__cui": "1234123412341",
+        "_Turno__nombre": "Pedro",
+        "_Turno__estado": "En espera"
+    }
+]
