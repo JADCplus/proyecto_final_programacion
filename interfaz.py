@@ -157,21 +157,18 @@ def ventana_principal_admin():
         return campo
 
     def actualizar_estadisticas():
-        total_de_pacientes = logica.pacientesTotales()
-        total_pacientes_consulta = logica.pacientesParaConsulta()
-        total_pacientes_urgentes = logica.pacientesParaUrgencia()
         _, tarjeta_pacientes_espera = tarjeta(frame_principal_admin, 105, 190, 340, 150, "PACIENTES EN\nESPERA", 18, 24,
-                                              total_de_pacientes)
+                                              logica.pacientesEnEspera())
         _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_admin, 555, 190, 340, 150, "PACIENTES\nATENDIDOS", 18,
-                                                 24, 0)
+                                                 24, logica.pacientesTotalesAtendidos())
         _, tarjeta_pacientes_urgencia = tarjeta(frame_principal_admin, 105, 390, 165, 150, "PACIENTES\nPARA URGENCIA",
-                                                10, 18, total_pacientes_urgentes)
+                                                10, 18, logica.pacientesParaUrgencia())
         _, tarjeta_pacientes_consulta = tarjeta(frame_principal_admin, 290, 390, 165, 150, "PACIENTES\nPARA CONSULTA",
-                                                10, 18, total_pacientes_consulta)
+                                                10, 18, logica.pacientesParaConsulta())
         _, tarjeta_pacientes_registrados = tarjeta(frame_principal_admin, 555,390, 165, 150, "PACIENTES\nREGISTRADOS",
-                                                10, 18, 0)
+                                                10, 18, logica.pacientesEnTotal())
         _, tarjeta_turnos_cancelados = tarjeta(frame_principal_admin, 740,390, 165, 150, "TURNOS\nCANCELADOS",
-                                                10, 18, 0)
+                                                10, 18, logica.pacientesTotalesCancelados())
 
         label_fecha_hora.config(text=time.strftime("%d/%m/%Y\n%H:%M:%S"))
         ventana_principal_admin.after(1000, actualizar_estadisticas)  # se repite cada segundo
@@ -450,6 +447,8 @@ def ventana_principal_admin():
         else:
             if accion == "finalizar":
                 logica.finalizarAtencion(siguiente.tipo)
+            else:
+                logica.cancelarAtencion(siguiente.tipo)
             actualizarTurno()
 
     tk.Button(frame_gestionar_turno,
@@ -468,6 +467,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command=lambda: finalizarAtencion("cancelar"),
               activeforeground=COLOR_OSCURO).place(x=600, y=480, width=190, height=40)
 
     #Frame Buscar Paciente

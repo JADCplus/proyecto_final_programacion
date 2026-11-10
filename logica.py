@@ -67,6 +67,9 @@ class Turno:
     @property
     def estado(self):
         return self.__estado
+    @estado.setter
+    def estado(self, estado):
+        self.__estado = estado
 
 def guardarPacientesGeneral(lista_objetos, nombre_archivo="pacientesGeneral.json"):
     datos_preparados = [p.__dict__ for p in lista_objetos]
@@ -74,6 +77,11 @@ def guardarPacientesGeneral(lista_objetos, nombre_archivo="pacientesGeneral.json
         json.dump(datos_preparados, info, indent=4, ensure_ascii=False)
 
 def guardarTurnos(lista_objetos, nombre_archivo="infoTurnos.json"):
+    datos_preparados = [p.__dict__ for p in lista_objetos]
+    with open(nombre_archivo, "w", encoding="utf-8") as info:
+        json.dump(datos_preparados, info, indent=4, ensure_ascii=False)
+
+def guardarHistorialTurnos(lista_objetos, nombre_archivo="historialTurnos.json"):
     datos_preparados = [p.__dict__ for p in lista_objetos]
     with open(nombre_archivo, "w", encoding="utf-8") as info:
         json.dump(datos_preparados, info, indent=4, ensure_ascii=False)
@@ -93,8 +101,22 @@ def cargarPacientes(nombre_archivo="pacientesGeneral.json"):
         datosCargados.append(paci)
     return datosCargados
 
-def pacientesTotales():
+def pacientesEnTotal():
+    return len(listadoPacientes)
+def pacientesEnEspera():
     return len(pacientesNormales)+len(pacientesUrgentes)
+def pacientesTotalesAtendidos():
+    contador = 0
+    for pac in historialTurnos:
+        if pac.estado == "Atendido":
+            contador += 1
+    return contador
+def pacientesTotalesCancelados():
+    contador = 0
+    for pac in historialTurnos:
+        if pac.estado == "Cancelado":
+            contador += 1
+    return contador
 
 def pacientesParaConsulta():
     return len(pacientesNormales)
@@ -114,13 +136,33 @@ def finalizarAtencion(tipo):
     confirmacion = messagebox.askyesno("Confirmación de finalización", "¿Desea finalizar la atención del paciente?")
     if confirmacion:
         if tipo == "Normal":
-            pacientesNormales.popleft()
+            atendido = pacientesNormales.popleft()
         else:
-            pacientesUrgentes.popleft()
+            atendido = pacientesUrgentes.popleft()
+        for turno in historialTurnos:
+            if atendido.codigo == turno.codigo:
+                turno.estado = "Atendido"
+                break
         guardarTurnos(pacientesUrgentes + pacientesNormales)
+        guardarHistorialTurnos(historialTurnos)
         messagebox.showinfo("Atención finalizada", "Se ha atentido al paciente.")
 
-def cargarTurnos(nombre_archivo = "infoTurnos.json"):
+def cancelarAtencion(tipo):
+    confirmacion = messagebox.askyesno("Confirmación de cancelación", "¿Desea cancelar la atención del paciente?")
+    if confirmacion:
+        if tipo == "Normal":
+            atendido = pacientesNormales.popleft()
+        else:
+            atendido = pacientesUrgentes.popleft()
+        for turno in historialTurnos:
+            if atendido.codigo == turno.codigo:
+                turno.estado = "Cancelado"
+                break
+        guardarHistorialTurnos(historialTurnos)
+        guardarTurnos(pacientesUrgentes + pacientesNormales)
+        messagebox.showinfo("Atención cancelada", "Se ha cancelado la atención al paciente.")
+
+def cargarTurnos(nombre_archivo = "historialTurnos.json"):
     with open(nombre_archivo, "r", encoding="utf-8") as f:
         listaCargada = json.load(f)
     datosCargados=[]
@@ -137,20 +179,27 @@ pacientesNormales = deque()
 pacientesUrgentes = deque()
 listadoPacientes = []
 turnosGenerales = []
+historialTurnos = []
+cantidadNormales=0
+cantidadUrgentes=0
 try:
     listadoPacientes = cargarPacientes()
-    turnosGenerales = cargarTurnos()
-    for tur in turnosGenerales:
-        if tur.codigo[0]=="N":
+    turnosGenerales = cargarTurnos(nombre_archivo = "infoTurnos.json")
+    historialTurnos = cargarTurnos()
+    for tur in historialTurnos:
+        if tur.codigo[0]=="N" and tur.estado == "En espera":
             pacientesNormales.append(tur)
-        else:
+            cantidadNormales += 1
+        elif tur.codigo[0]=="U" and tur.estado == "En espera":
             pacientesUrgentes.append(tur)
+            cantidadUrgentes += 1
+        if tur.codigo[0]=="N": cantidadNormales += 1
+        else: cantidadUrgentes += 1
 except:
     pass
-turnoNormales = len(pacientesNormales)+1
-turnoUrgentes = len(pacientesUrgentes)+1
+
 def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
-    global turnoNormales, turnoUrgentes
+    global cantidadNormales, cantidadUrgentes
     cuiExistente = False
     if len(listadoPacientes)>0:
         for paciente in listadoPacientes:
@@ -164,11 +213,11 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
                                            "Asegurese de que la información es correcta.\n¿Desea registrar al paciente?")
         if confirmar:
             if tipo == "Normal":
-                codigo = "NOR" + str(turnoNormales)
-                turnoNormales += 1
+                codigo = "NOR" + str(cantidadNormales)
+                cantidadNormales += 1
             else:
-                codigo = "URG" + str(turnoUrgentes)
-                turnoUrgentes += 1
+                codigo = "URG" + str(cantidadUrgentes)
+                cantidadUrgentes += 1
             tur = Turno(codigo, cui, nombre, "En espera")
             turnosGenerales.append(tur)
             if tipo == "Normal":
@@ -176,6 +225,8 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
             else:
                 pacientesUrgentes.append(tur)
             listadoPacientes.append(p)
+            historialTurnos.append(tur)
+            guardarHistorialTurnos(historialTurnos)
             guardarTurnos(pacientesUrgentes + pacientesNormales)
             guardarPacientesGeneral(listadoPacientes)
             messagebox.showinfo(f"Paciente registrado", "El paciente ha sido registrado correctamente."
