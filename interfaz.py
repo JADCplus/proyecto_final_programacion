@@ -208,7 +208,7 @@ def ventana_principal_admin():
     label(barra_lateral,"ADMINISTRAR INFORMACION",30, 520, COLOR_BLANCO, COLOR_PRINCIPAL,10)
     boton(barra_lateral,"MODIFICAR PACIENTE", 40,570,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_modificar_paciente))
     boton(barra_lateral,"MODIFICAR USUARIO", 40,620,COLOR_BLANCO, COLOR_PRINCIPAL,"flat",150,25, comando=lambda: mostrar_frame(frame_modificar_usuario))
-
+    boton(barra_lateral,"ACERCA DE:", 40, 670, COLOR_BLANCO, COLOR_PRINCIPAL,"flat", 150, 25, comando=lambda: mostrar_frame(frame_creditos))
 
     # VENTANA PRINCIPAL
 
@@ -490,7 +490,7 @@ def ventana_principal_admin():
                       )
     titulo.place(x=360, y=80)
 
-    label(frame_buscar_paciente,"BUSCAR POR:",130, 200, COLOR_OSCURO,COLOR_BLANCO,8)
+    label(frame_buscar_paciente,"BUSCAR POR:",130,200,COLOR_OSCURO,COLOR_BLANCO,8)
     lista_busqueda = ttk.Combobox(frame_buscar_paciente,
                                   values=["CUI", "CÓDIGO DE TURNO"],
                                   font=("Sans", 10, "bold"),
@@ -550,6 +550,13 @@ def ventana_principal_admin():
                                            )
     tarjeta_historial_acciones.place(x=215, y=150)
 
+    label_datos_historial_acciones= tk.Label(tarjeta_historial_acciones,
+                                             text="datos",
+                                             font=("Sans", 10, "bold"),
+                                             fg=COLOR_OSCURO,bg=COLOR_CLARO,
+                                             )
+    label_datos_historial_acciones.place(x=50,y=40)
+
     tk.Button(frame_historial_acciones,
               text="DESHACER ULTIMA \nACCION",
               font=("Sans", 10, "bold"),
@@ -572,13 +579,20 @@ def ventana_principal_admin():
                       )
     titulo.place(x=350, y=50)
 
-    tarjeta_historial_acciones = tk.Canvas(frame_historial_pacientes,
+    tarjeta_historial_pacientes = tk.Canvas(frame_historial_pacientes,
                                            width=600, height=525,
                                            bg=COLOR_CLARO,
                                            highlightbackground=COLOR_OSCURO,
                                            highlightthickness=3
                                            )
-    tarjeta_historial_acciones.place(x=210, y=200)
+    tarjeta_historial_pacientes.place(x=210, y=200)
+
+    label_datos_historial_pacientes = tk.Label(tarjeta_historial_pacientes,
+                                              text="datos",
+                                              font=("Sans", 10, "bold"),
+                                              fg=COLOR_OSCURO, bg=COLOR_CLARO,
+                                              )
+    label_datos_historial_pacientes.place(x=50, y=40)
 
     label(frame_historial_pacientes,"FILTRAR POR:",210,100,COLOR_OSCURO,COLOR_BLANCO,8)
 
@@ -750,6 +764,27 @@ def ventana_principal_admin():
               activebackground=COLOR_BLANCO,
               activeforeground=COLOR_OSCURO).place(x=230, y=675, width=200, height=40)
 
+    # Frame Creditos
+
+    frame_creditos = tk.Frame(ventana_principal_admin,bg="#FFFFFF")
+
+    frame_creditos.place(x=251,y=0,relwidth=1,width=-251,relheight=1)
+
+    titulo = tk.Label(frame_creditos,
+                      text="CREDITOS",
+                      font=("Sans", 20, "bold"),
+                      fg=COLOR_OSCURO, bg=COLOR_BLANCO)
+    titulo.place(x=440,y=125)
+
+    label(frame_creditos,"PROYECTO REALIZADO POR:",365,210,COLOR_OSCURO, COLOR_BLANCO, 15)
+
+    label(frame_creditos,"BACKEND:",200,300,COLOR_OSCURO, COLOR_BLANCO, 15)
+    label(frame_creditos,"AXL JAVIER OSWALDO GOMEZ RAMIREZ",90,360, COLOR_OSCURO, COLOR_BLANCO, 12)
+    label(frame_creditos,"CARNET: 2501002010", 170,380, COLOR_OSCURO, COLOR_BLANCO, 12)
+
+    label(frame_creditos,"FRONTEND:", 710, 300,COLOR_OSCURO, COLOR_BLANCO, 15 )
+    label(frame_creditos,"JULIAN ANTONIO DE LEON CASTILLO", 620,360,COLOR_OSCURO, COLOR_BLANCO, 12)
+    label(frame_creditos,"CARNET: 2401002017", 680,380,COLOR_OSCURO, COLOR_BLANCO, 12)
 
     actualizar_estadisticas()
     mostrar_frame(frame_principal_admin)
@@ -1076,6 +1111,13 @@ def ventana_principal_repecionista():
                                            )
     tarjeta_historial_acciones.place(x=215, y=150)
 
+    label_datos_historial_acciones = tk.Label(tarjeta_historial_acciones,
+                                              text="datos",
+                                              font=("Sans", 10, "bold"),
+                                              fg=COLOR_OSCURO, bg=COLOR_CLARO,
+                                              )
+    label_datos_historial_acciones.place(x=50, y=40)
+
     tk.Button(frame_historial_acciones,
               text="DESHACER ULTIMA \nACCION",
               font=("Sans", 10, "bold"),
@@ -1096,13 +1138,20 @@ def ventana_principal_repecionista():
                       )
     titulo.place(x=350, y=50)
 
-    tarjeta_historial_acciones = tk.Canvas(frame_historial_pacientes,
+    tarjeta_historial_pacientes = tk.Canvas(frame_historial_pacientes,
                                            width=600, height=525,
                                            bg=COLOR_CLARO,
                                            highlightbackground=COLOR_OSCURO,
                                            highlightthickness=3
                                            )
-    tarjeta_historial_acciones.place(x=210, y=200)
+    tarjeta_historial_pacientes.place(x=210, y=200)
+
+    label_datos_historial_pacientes = tk.Label(tarjeta_historial_pacientes,
+                                              text="datos",
+                                              font=("Sans", 10, "bold"),
+                                              fg=COLOR_OSCURO, bg=COLOR_CLARO,
+                                              )
+    label_datos_historial_pacientes.place(x=50, y=40)
 
     label(frame_historial_pacientes, "FILTRAR POR:", 210, 100, COLOR_OSCURO, COLOR_BLANCO, 8)
 
