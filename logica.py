@@ -169,6 +169,7 @@ def finalizarAtencion(tipo):
                 break
         guardarTurnos(pacientesUrgentes + pacientesNormales)
         guardarHistorialTurnos(historialTurnos)
+        agregarAccion(f"Se atendió el turno de código {atendido.codigo}", atendido)
         messagebox.showinfo("Atención finalizada", "Se ha atentido al paciente.")
 
 def cancelarAtencion(tipo):
@@ -184,6 +185,7 @@ def cancelarAtencion(tipo):
                 break
         guardarHistorialTurnos(historialTurnos)
         guardarTurnos(pacientesUrgentes + pacientesNormales)
+        agregarAccion(f"Se canceló el turno de código {atendido.codigo}",atendido)
         messagebox.showinfo("Atención cancelada", "Se ha cancelado la atención al paciente.")
 
 def cargarTurnos(nombre_archivo = "historialTurnos.json"):
@@ -253,6 +255,7 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
             guardarHistorialTurnos(historialTurnos)
             guardarTurnos(pacientesUrgentes + pacientesNormales)
             guardarPacientesGeneral(listadoPacientes)
+            agregarAccion(f"Se registró al paciente con código de turno {tur.codigo}",tur)
             messagebox.showinfo(f"Paciente registrado", "El paciente ha sido registrado correctamente."
                                                         f"\nEl código de turno del paciente es: {codigo}")
             return True
@@ -289,6 +292,7 @@ def registrarUsuario(cui, nombre, edad, telefono, usuario, contra, tipo):
         confirmar = messagebox.askokcancel("Registro de usuario","Asegurese de que la información es correcta.\n¿Desea registrar el usuario?")
         if confirmar:
             listadoUsuarios.append(u)
+            agregarAccion(f"Se registró el usuario {u.user}",u)
             messagebox.showinfo("Usuario registrado", "El usuario ha sido registrado correctamente.")
             guardarUsuarios(listadoUsuarios)
             return True
@@ -366,18 +370,21 @@ def modificarDatosUsuario(cui,nombre,edad,telefono,user,contra):
     encontrado = False
     for u in listadoUsuarios:
         if u.cui == cui:
+            guardar = u
             u.nombre=nombre
             u.edad=edad
             u.telefono=telefono
             u.contra=contra
             u.user=user
             encontrado = True
+            agregarAccion(f"Se modificaron los datos del usuario {guardar.user}",guardar)
             guardarUsuarios(listadoUsuarios)
             break
     if not encontrado:
         messagebox.showwarning("Error al modificar", "Asegurese de no modificar el número de CUI.")
     else:
         messagebox.showinfo("Información modificada", "La información del usuario se modificó correctamente.")
+
 
 def pacienteParaModificar(cui):
     for paci in listadoPacientes:
@@ -414,3 +421,21 @@ def modificarInfoPaciente(cui,nombre,edad,telefono,motivo):
         messagebox.showwarning("Error al modificar", "Asegurese de no modificar el número de CUI.")
     else:
         messagebox.showinfo("Información modificada", "La información del paciente se modificó correctamente.")
+
+#Historial de acciones
+historialAcciones=[]
+def agregarAccion(mensaje, accion):
+    historialAcciones.append(mensaje)
+
+#login
+def verificarLogin(usu,contra):
+    for us in listadoUsuarios:
+        if us.user == usu and us.contra == contra:
+            messagebox.showinfo("Sesión iniciada", "Ha iniciado sesión correctamente.")
+            return True
+    messagebox.showerror("Error al iniciar sesión", "Usuario o contraseña incorrectos")
+    return False
+def tipoUsuario(usu,contra):
+    for us in listadoUsuarios:
+        if us.user == usu and us.contra == contra:
+            return us

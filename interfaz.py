@@ -14,6 +14,15 @@ COLOR_GRIS = "#696969"
 
 # ventana login
 def login():
+
+    def logear():
+        if logica.verificarLogin(entry_usuario.get(), entry_password.get()):
+            tipo_de_usuario = logica.tipoUsuario(entry_usuario.get(), entry_password.get())
+            if tipo_de_usuario.tipo == "Administrador":
+                pass
+            else:
+                pass
+
     ventana_login = tk.Tk()
     ventana_login.title("Login")
     ventana_login.geometry('1300x770')
@@ -84,7 +93,7 @@ def login():
     boton_confirmar = tk.Button(ventana_login, text="INGRESAR",
                                 font=("Sans-Serif", 10, "bold"),
                                 fg="#FFFFFF",
-                                bg="#0097A7")
+                                bg="#0097A7", command = logear)
     boton_confirmar.place(x=260, y=600, width=200, height=40)
 
     img = Image.open("clinica.png").resize((350, 350))
@@ -255,6 +264,7 @@ def ventana_principal_admin():
             if logica.validacionesDatosNumericos(cui, edad, numero):
                 if logica.registrarPaciente(cui,nombre,edad,numero,motivo,tipo):
                     limpiarInfoPaciente()
+                    actualizarHistorial()
                     actualizarTurno()
 
     def limpiarInfoPaciente():
@@ -550,10 +560,17 @@ def ventana_principal_admin():
                                            )
     tarjeta_historial_acciones.place(x=215, y=150)
 
+    def actualizarAcciones():
+        textoAcciones=""
+        for acciones in logica.historialAcciones:
+            textoAcciones = textoAcciones + acciones + "\n-------------------------------------------------------------------------------------------------------------------------\n"
+        return textoAcciones
+    actualizarAcciones()
     label_datos_historial_acciones= tk.Label(tarjeta_historial_acciones,
-                                             text="datos",
+                                             text=actualizarAcciones(),
                                              font=("Sans", 10, "bold"),
                                              fg=COLOR_OSCURO,bg=COLOR_CLARO,
+                                             justify="left"
                                              )
     label_datos_historial_acciones.place(x=50,y=40)
 
@@ -587,31 +604,20 @@ def ventana_principal_admin():
                                            )
     tarjeta_historial_pacientes.place(x=210, y=200)
 
+    def actualizarHistorial():
+        textoHistorial=""
+        for histo in logica.listadoPacientes:
+            textoHistorial = textoHistorial + (f"CUI: {histo.cui} | Nombre: {histo.nombre} | Edad: {histo.edad} | Teléfono: {histo.telefono}"
+                                               f"\n--------------------------------------------------------------------------------------------------------------------------------------------------\n")
+        return textoHistorial
+    actualizarHistorial()
     label_datos_historial_pacientes = tk.Label(tarjeta_historial_pacientes,
-                                              text="datos",
+                                              text=actualizarHistorial(),
                                               font=("Sans", 10, "bold"),
                                               fg=COLOR_OSCURO, bg=COLOR_CLARO,
+                                               justify="left"
                                               )
-    label_datos_historial_pacientes.place(x=50, y=40)
-
-    label(frame_historial_pacientes,"FILTRAR POR:",210,100,COLOR_OSCURO,COLOR_BLANCO,8)
-
-    lista_historial = ttk.Combobox(frame_historial_pacientes,
-                                   values=["ATENDIDOS","CANCELADOS","EN ESPERA"],
-                                   font=("Sans", 10, "bold"),
-                                   state="readonly"
-                                   )
-    lista_historial.place(x=210, y=120,width=300, height=30)
-    lista_historial.current(0)
-
-    tk.Button(frame_historial_pacientes,
-              text="FILTRAR",
-              font=("Sans", 10, "bold"),
-              fg=COLOR_BLANCO,
-              bg=COLOR_PRINCIPAL,
-              activebackground=COLOR_BLANCO,
-              activeforeground=COLOR_OSCURO,
-              ).place(x=660, y=120, width=150, height=30)
+    label_datos_historial_pacientes.place(x=10, y=10)
 
     # Frame Modificar Paciente
 
@@ -1164,6 +1170,10 @@ def ventana_principal_repecionista():
 
     # Frame Historial Pacientes
 
+    textoHistorial=""
+    for histo in logica.listadoPacientes:
+        textoHistorial = textoHistorial + f"CUI: {histo.cui}\n------------------------------------------------------------------------\n"
+
     frame_historial_pacientes = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
     frame_historial_pacientes.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
 
@@ -1183,7 +1193,7 @@ def ventana_principal_repecionista():
     tarjeta_historial_pacientes.place(x=210, y=200)
 
     label_datos_historial_pacientes = tk.Label(tarjeta_historial_pacientes,
-                                              text="datos",
+                                              text=textoHistorial,
                                               font=("Sans", 10, "bold"),
                                               fg=COLOR_OSCURO, bg=COLOR_CLARO,
                                               )
@@ -1213,5 +1223,6 @@ def ventana_principal_repecionista():
 
     ventana_principal_recepcionista.mainloop()
 
-ventana_principal_admin()
+login()
+#ventana_principal_admin()
 
