@@ -1223,6 +1223,6 @@ def ventana_principal_repecionista():
 
     ventana_principal_recepcionista.mainloop()
 
-login()
-#ventana_principal_admin()
+#login()
+ventana_principal_admin()
 
