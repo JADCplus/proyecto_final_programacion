@@ -19,8 +19,10 @@ def login():
         if logica.verificarLogin(entry_usuario.get(), entry_password.get()):
             tipo_de_usuario = logica.tipoUsuario(entry_usuario.get(), entry_password.get())
             if tipo_de_usuario.tipo == "Administrador":
+                ventana_login.destroy()
                 ventana_principal_admin()
             else:
+                ventana_login.destroy()
                 ventana_principal_repecionista()
 
     ventana_login = tk.Tk()
@@ -235,11 +237,11 @@ def ventana_principal_admin():
     frame_principal_admin = tk.Frame(ventana_principal_admin, bg="#FFFFFF")
 
     titulo_ventana_principal = tk.Label(frame_principal_admin,
-                                        text="BIENVENIDO: ",
+                                        text="BIENVENIDO ",
                                         font=("Sans-Serif", 30, "bold"),
                                         fg="#0097A7",
                                         bg="#FFFFFF")
-    titulo_ventana_principal.place(x=270, y=70)
+    titulo_ventana_principal.place(x=370, y=70)
 
     tarjeta_fecha_hora, _ = tarjeta(frame_principal_admin, 345, 590, 340, 150, "", 10, 10, 0,con_numero=False)
 
@@ -940,11 +942,11 @@ def ventana_principal_repecionista():
     frame_principal_recepcionista = tk.Frame(ventana_principal_recepcionista, bg="#FFFFFF")
 
     titulo_ventana_principal = tk.Label(frame_principal_recepcionista,
-                                        text="BIENVENIDO: ",
+                                        text="BIENVENIDO ",
                                         font=("Sans-Serif", 30, "bold"),
                                         fg="#0097A7",
                                         bg="#FFFFFF")
-    titulo_ventana_principal.place(x=270, y=70)
+    titulo_ventana_principal.place(x=370, y=70)
 
     _, tarjeta_pacientes_espera = tarjeta(frame_principal_recepcionista, 105, 220, 340, 200, "PACIENTES EN\nESPERA", 18, 24)
     _, tarjeta_pacientes_atendidos = tarjeta(frame_principal_recepcionista, 555, 220, 340, 200, "PACIENTES\nATENDIDOS", 18, 24)
