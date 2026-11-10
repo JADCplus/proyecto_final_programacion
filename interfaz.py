@@ -697,7 +697,7 @@ def ventana_principal_admin():
     frame_modificar_usuario.place(x=251, y=0, relwidth=1, width=-251, relheight=1)
 
     titulo = tk.Label(frame_modificar_usuario,
-                      text="MODIFICAR PACIENTE",
+                      text="MODIFICAR USUARIO",
                       font=("Sans", 20, "bold"),
                       fg=COLOR_OSCURO, bg=COLOR_BLANCO
                       )
@@ -705,8 +705,41 @@ def ventana_principal_admin():
 
     label(frame_modificar_usuario, "INGRESE EL CUI:", 365, 120, COLOR_OSCURO, COLOR_BLANCO, 8)
 
-    entrada_modificar_cui_paciente = entrada(frame_modificar_usuario, 365, 140, 300, 30, 10)
-    entrada_modificar_cui_paciente.focus_set()
+    entrada_modificar_cui_usuario = entrada(frame_modificar_usuario, 365, 140, 300, 30, 10)
+    entrada_modificar_cui_usuario.focus_set()
+
+    def limpiarTodosModificarUsuario():
+        limpiarCamposModificar()
+        entrada_modificar_cui_usuario.delete(0, "end")
+        entrada_modificar_cui_usuario.focus_set()
+
+    def limpiarCamposModificar():
+        entrada_modificar_nombre_usuario.delete(0, "end")
+        entrada_modificar_edad_usuario.delete(0, "end")
+        entrada_modificar_usuario.delete(0, "end")
+        entrada_modificar_telefono_usuario.delete(0, "end")
+        entrada_modificar_password.delete(0, "end")
+
+    def buscarParaModificarUsuario():
+        if not entrada_modificar_cui_usuario.get():
+            messagebox.showerror("Error al buscar usuario", "Asegurese de ingresar un número de CUI.")
+        else:
+            encontrado = logica.usuarioParaModificar(entrada_modificar_cui_usuario.get())
+            limpiarCamposModificar()
+            if encontrado is not None:
+                entrada_modificar_nombre_usuario.insert(0,encontrado.nombre)
+                entrada_modificar_edad_usuario.insert(0,encontrado.edad)
+                entrada_modificar_telefono_usuario.insert(0,encontrado.telefono)
+                entrada_modificar_password.insert(0,encontrado.contra)
+                entrada_modificar_usuario.insert(0,encontrado.user)
+    def confirmarModificacionUsuario():
+        if not entrada_modificar_cui_usuario.get():
+            messagebox.showerror("Error al modificar usuario", "Asegurese de ingresar un número de CUI.")
+        else:
+            if not logica.validarDatosRepetidos(entrada_modificar_cui_usuario.get(),entrada_modificar_usuario.get(),"otro"):
+                logica.modificarDatosUsuario( entrada_modificar_cui_usuario.get(),entrada_modificar_nombre_usuario.get(),entrada_modificar_edad_usuario.get(),
+                                              entrada_modificar_telefono_usuario.get(), entrada_modificar_usuario.get(),entrada_modificar_password.get())
+                limpiarTodosModificarUsuario()
 
     tk.Button(frame_modificar_usuario,
               text="BUSCAR",
@@ -714,6 +747,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = buscarParaModificarUsuario,
               activeforeground=COLOR_OSCURO).place(x=700, y=140, width=100, height=30)
 
     label(frame_modificar_usuario,"---------------  MODIFICAR DATOS  -------------------------------------------------------------"
@@ -740,6 +774,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = limpiarTodosModificarUsuario,
               activeforeground=COLOR_OSCURO).place(x=600, y=675, width=200, height=40)
 
     tk.Button(frame_modificar_usuario,
@@ -748,6 +783,7 @@ def ventana_principal_admin():
               fg=COLOR_BLANCO,
               bg=COLOR_PRINCIPAL,
               activebackground=COLOR_BLANCO,
+              command = confirmarModificacionUsuario,
               activeforeground=COLOR_OSCURO).place(x=230, y=675, width=200, height=40)
 
 

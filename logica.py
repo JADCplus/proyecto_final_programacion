@@ -46,14 +46,29 @@ class Paciente(Persona):
         self.__motivo = motivo
 
 class Usuario(Persona):
-    def __init__(self, nombre, edad, cui, telefono, usuario, contra, tipo):
+    def __init__(self, nombre, edad, cui, telefono, user, contra, tipo):
         super().__init__(nombre, edad, cui, telefono)
-        self.__usuario = usuario
+        self.__user = user
         self.__contra = contra
         self.__tipo = tipo
     @property
-    def usuario(self):
-        return self.__usuario
+    def user(self):
+        return self.__user
+    @property
+    def contra(self):
+        return self.__contra
+    @property
+    def tipo(self):
+        return self.__tipo
+    @user.setter
+    def user(self,user):
+        self.__user = user
+    @contra.setter
+    def contra(self,contra):
+        self.__contra = contra
+    @tipo.setter
+    def tipo(self,tipo):
+        self.__tipo = tipo
 
 class Turno:
     def __init__(self, codigo, cui, nombre,estado):
@@ -243,6 +258,7 @@ def registrarPaciente(cui, nombre, edad, telefono, motivo, tipo):
             return True
         return False
 
+#Métodos relacionados a usuarios
 listadoUsuarios = []
 def guardarUsuarios(lista_objetos, nombre_archivo="usuarios.json"):
     datos_preparados = [p.__dict__ for p in lista_objetos]
@@ -257,7 +273,7 @@ def cargarUsuarios(nombre_archivo="usuarios.json"):
         edad = lis.pop("_Persona__edad")
         cui = lis.pop("_Persona__cui")
         telefono = lis.pop("_Persona__telefono")
-        usuario = lis.pop("_Usuario__usuario")
+        usuario = lis.pop("_Usuario__user")
         contra = lis.pop("_Usuario__contra")
         tipo = lis.pop("_Usuario__tipo")
         usua = Usuario(nombre,edad,cui,telefono,usuario,contra,tipo)
@@ -269,17 +285,7 @@ except:
     pass
 def registrarUsuario(cui, nombre, edad, telefono, usuario, contra, tipo):
     u = Usuario(nombre,edad,cui,telefono,usuario,contra,tipo)
-    existente = False
-    for usu in listadoUsuarios:
-        if usu.cui == cui:
-            existente = True
-            messagebox.showwarning("Error al registrar usuario", "Ya hay un usuario con ese número de CUI.")
-            break
-        elif usu.usuario == usuario:
-            existente = True
-            messagebox.showwarning("Error al registrar usuario", "Ese nombre de usuario ya está en uso.")
-            break
-    if not existente:
+    if not validarDatosRepetidos(cui,usuario,"registrar"):
         confirmar = messagebox.askokcancel("Registro de usuario","Asegurese de que la información es correcta.\n¿Desea registrar el usuario?")
         if confirmar:
             listadoUsuarios.append(u)
@@ -287,6 +293,21 @@ def registrarUsuario(cui, nombre, edad, telefono, usuario, contra, tipo):
             guardarUsuarios(listadoUsuarios)
             return True
     return False
+def validarDatosRepetidos(cui,usuario, accion):
+    existente = False
+    for usu in listadoUsuarios:
+        if usu.cui == cui and accion == "registrar":
+            existente = True
+            messagebox.showwarning("Error al registrar usuario", "Ya hay un usuario con ese número de CUI.")
+            break
+        elif usu.user == usuario:
+            existente = True
+            if accion == "registrar":
+                messagebox.showwarning("Error al registrar usuario", "Ese nombre de usuario ya está en uso.")
+            else:
+                messagebox.showwarning("Error al modificar usuario", "Ese nombre de usuario ya está en uso.")
+            break
+    return existente
 
 def validacionesDatosNumericos(cui, edad, telefono):
     if edad.isdigit():
@@ -333,6 +354,31 @@ def buscarPaciente(tipoBusqueda, datoIngresado):
                             encontrado = paciente
                             return f"CUI: {encontrado.cui}\nNombre: {encontrado.nombre}\nEdad: {encontrado.edad}\nTeléfono: {encontrado.telefono}\nEstado: {turno.estado}"
         return "Paciente no encontrado"
+
+#Métodos de modificación de datos
+def usuarioParaModificar(cui):
+    for usu in listadoUsuarios:
+        if usu.cui == cui:
+            return usu
+    messagebox.showwarning("Usuario no encontrado", "No se encontró ningún usuario con ese\nnúmero de CUI.")
+    return None
+def modificarDatosUsuario(cui,nombre,edad,telefono,user,contra):
+    encontrado = False
+    for u in listadoUsuarios:
+        if u.cui == cui:
+            u.nombre=nombre
+            u.edad=edad
+            u.telefono=telefono
+            u.contra=contra
+            u.user=user
+            encontrado = True
+            guardarUsuarios(listadoUsuarios)
+            break
+    if not encontrado:
+        messagebox.showwarning("Error al modificar", "Asegurese de no modificar el número de CUI.")
+    else:
+        messagebox.showinfo("Información modificada", "La información del usuario se modificó correctamente.")
+
 def pacienteParaModificar(cui):
     for paci in listadoPacientes:
         if paci.cui == cui:
