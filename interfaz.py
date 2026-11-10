@@ -19,9 +19,9 @@ def login():
         if logica.verificarLogin(entry_usuario.get(), entry_password.get()):
             tipo_de_usuario = logica.tipoUsuario(entry_usuario.get(), entry_password.get())
             if tipo_de_usuario.tipo == "Administrador":
-                pass
+                ventana_principal_admin()
             else:
-                pass
+                ventana_principal_repecionista()
 
     ventana_login = tk.Tk()
     ventana_login.title("Login")
@@ -1223,6 +1223,6 @@ def ventana_principal_repecionista():
 
     ventana_principal_recepcionista.mainloop()
 
-#login()
-ventana_principal_admin()
+login()
+
 
